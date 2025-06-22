@@ -8,7 +8,7 @@ export type RootDrawerParamList = {
     contactsMain: undefined;
     calendarMain: undefined;
     notificationsMain: undefined;
-    settings: undefined;
+    settingsMain: undefined;
 }
 
 

@@ -19,7 +19,7 @@ const Stack = createNativeStackNavigator<StackParamList>();
 export default function SettingsStackNavigation (){
     return(
         <Stack.Navigator
-        initialRouteName="index"
+        initialRouteName="settings"
         screenOptions={{ headerShown: false }}
         >
             {/* //aqui van las pantallas del stack */}

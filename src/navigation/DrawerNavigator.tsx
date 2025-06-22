@@ -94,7 +94,7 @@ export default function DrawerNavigation() {
                 }}
             />
             <Drawer.Screen
-                name="settings"
+                name="settingsMain"
                 component={SettingsStackNavigation}
                 options={{
                     title: 'Configuraciones',
