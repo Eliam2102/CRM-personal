@@ -11,10 +11,9 @@ export default function CalendarScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+   container: {
+    flexGrow: 1,
+    padding: 16,
     backgroundColor: '#f0f0f0',
   },
   text: {
