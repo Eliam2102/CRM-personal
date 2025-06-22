@@ -3,16 +3,14 @@ import { View, StyleSheet, FlatList, Text } from 'react-native';
 import ContactCard from '../../../molecules/Cards/ContactCard/ContactCard';
 import { useNavigation } from "@react-navigation/native";
 import { ContactStackNavigationProp } from '../../../../../navigation/Contact/types/types';
+import { Contact } from '../../../../contactos/domain/entities/contact';
 
-export default function ContactList() {
+interface ContactListProps {
+  contacts: Contact[];
+}
+
+export default function ContactList({ contacts }: ContactListProps) {
   const navigation = useNavigation<ContactStackNavigationProp>();
-
-  const contacts = [
-    { id: '1', name: 'Juan Pérez', imageUri: '' },
-    { id: '2', name: 'Ana Gómez', imageUri: '' },
-    { id: '3', name: 'Carlos Ramírez', imageUri: '' },
-    { id: '4', name: 'Lucía Fernández', imageUri: '' },
-  ];
 
   return (
     <View style={styles.container}>
