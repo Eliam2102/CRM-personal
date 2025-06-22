@@ -12,18 +12,15 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 //región para importar las pantallas de la cpa de presentación de cada feature
 //pantlalas de calendarios
-import CalendarScreen from "../features/calendar/presentation/Calendar";
-import EventDetailScreen from "../features/calendar/presentation/EventDetail";
-//pantallas de contactos
-import ContactListScreen from "../features/contactos/presentation/ContactList";
-import ContactDetailScreen from "../features/contactos/presentation/ContactDetail";
+import CalendarStackNavigator from "./Calendar/StackCalendarNavigator";
+
 //pantallas de notifiaciones
-import NotificationDetailScreen from "../features/notifications/presentation/NotificationDetail";
-import NotificationListScreen from "../features/notifications/presentation/NotificationList";
+import NotificationStackNavigator from "./Notifications/StackNotificationNavigator";
 //pantallas de configuración
 //home esta dentro de configuración porque es parte  de los acciones   que dan cambio a la app
 import HomeScreen from "../features/settings/presentation/Home";
-import SettingsScreen from "../features/settings/presentation/Settings";
+import SettingsStackNavigation from "./Main/StackNavigator";
+import ContactStackNavigator from "./Contact/StackContactNavigator";
 //final de la región pra importar las pantallas
 
 
@@ -68,7 +65,7 @@ export default function DrawerNavigation() {
             />
             <Drawer.Screen
                 name="contacts"
-                component={ContactListScreen}
+                component={ContactStackNavigator}
                 options={{
                     title: 'Contactos',
                     drawerIcon: ({ color, size }) => (
@@ -78,7 +75,7 @@ export default function DrawerNavigation() {
             />
             <Drawer.Screen
                 name="calendar"
-                component={CalendarScreen}
+                component={CalendarStackNavigator}
                 options={{
                     title: 'Calendario',
                     drawerIcon: ({ color, size }) => (
@@ -88,7 +85,7 @@ export default function DrawerNavigation() {
             />
             <Drawer.Screen
                 name="notifications"
-                component={NotificationListScreen}
+                component={NotificationStackNavigator}
                 options={{
                     title: 'Notificaciones',
                     drawerIcon: ({ color, size }) => (
@@ -98,7 +95,7 @@ export default function DrawerNavigation() {
             />
             <Drawer.Screen
                 name="settings"
-                component={SettingsScreen}
+                component={SettingsStackNavigation}
                 options={{
                     title: 'Configuraciones',
                     drawerIcon: ({ color, size }) => (

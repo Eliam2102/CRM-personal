@@ -9,9 +9,6 @@ export type RootDrawerParamList = {
     calendar: undefined;
     notifications: undefined;
     settings: undefined;
-    contactDetail: { id: string }; //el string se pone dentro de parentsis para espefiicar uqe se recibe ese parametro ,que es el id y se poene que string por qeu peude ser numero sy letras 
-    eventDetail: { id: string }; //el string se pone dentro de parentsis para espefiicar uqe se recibe ese parametro
-    notificationDetail: { id: string }; //el string se pone dentro de parentsis para espefiicar uqe se recibe ese parametro
 }
 
 
