@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import ContactCard from '../../molecules/Cards/ContactCard/ContactCard';
 import EventCard from '../../molecules/Cards/EventCard/EventCard';
 import NotificationCard from '../../molecules/Cards/NotificationCard/NotificationCard';
@@ -26,41 +26,84 @@ export default function Dashboard({
   onNavigateSettings,
 }: DashboardProps) {
   return (
-    <View style={styles.container}>
-      <Text>Contactos sugeridos:</Text>
-      {contacts.map((contact, index) => (
-        <ContactCard key={index} {...contact} />
-      ))}
-      <Button onClick={onNavigateContacts}>
-        <Text>Ver todos los contactos</Text>
-      </Button>
+    <ScrollView contentContainerStyle={styles.container}>
+      {/* Contactos */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Contactos sugeridos</Text>
+        {contacts.map((contact, index) => (
+          <ContactCard key={index} {...contact} />
+        ))}
+        <Button onClick={onNavigateContacts} style={styles.button}>
+          <Text style={styles.buttonText}>Ver todos los contactos</Text>
+        </Button>
+      </View>
 
-      <Text>Eventos próximos:</Text>
-      {events.map((event, index) => (
-        <EventCard key={index} {...event} />
-      ))}
-      <Button onClick={onNavigateCalendar}>
-        <Text>Ver todo el calendario</Text>
-      </Button>
+      {/* Eventos */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Eventos próximos</Text>
+        {events.map((event, index) => (
+          <EventCard key={index} {...event} />
+        ))}
+        <Button onClick={onNavigateCalendar} style={styles.button}>
+          <Text style={styles.buttonText}>Ver todo el calendario</Text>
+        </Button>
+      </View>
 
-      <Text>Notificaciones activas:</Text>
-      {notifications.map((notification, index) => (
-        <NotificationCard key={index} {...notification} />
-      ))}
-      <Button onClick={onNavigateNotifications}>
-        <Text>Ver todas las notificaciones</Text>
-      </Button>
+      {/* Notificaciones */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Notificaciones activas</Text>
+        {notifications.map((notification, index) => (
+          <NotificationCard key={index} {...notification} />
+        ))}
+        <Button onClick={onNavigateNotifications} style={styles.button}>
+          <Text style={styles.buttonText}>Ver todas las notificaciones</Text>
+        </Button>
+      </View>
 
-      <Button onClick={onNavigateSettings}>
-        <Text>Ir a configuración</Text>
-      </Button>
-    </View>
+      {/* Configuración */}
+      <View style={styles.section}>
+        <Button onClick={onNavigateSettings} style={styles.settingsButton}>
+          <Text style={styles.settingsButtonText}>Ir a configuración</Text>
+        </Button>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    gap: 16,
     padding: 16,
+    gap: 24,
+    backgroundColor: '#f9f9f9',
+  },
+  section: {
+    gap: 12,
+    marginBottom: 16,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 8,
+  },
+  button: {
+    backgroundColor: '#007BFF',
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  settingsButton: {
+    backgroundColor: '#555',
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  settingsButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });

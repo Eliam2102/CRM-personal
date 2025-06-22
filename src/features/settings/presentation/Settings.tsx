@@ -1,25 +1,41 @@
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, ScrollView } from 'react-native';
+import SettingsPanel from '../../shared/organisms/SettingsPanel/SettingsPanel';
 
 export default function SettingsScreen() {
+  // Estados dummy solo para probar
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
+  const [calendarSyncEnabled, setCalendarSyncEnabled] = useState(false);
+
+  const handleToggleNotifications = () => {
+    setNotificationsEnabled(prev => !prev);
+  };
+
+  const handleToggleCalendarSync = () => {
+    setCalendarSyncEnabled(prev => !prev);
+  };
+
+  const handleResetApp = () => {
+    console.warn('App restablecida');
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Esta es la vista que se va a generar para poder mostrar las configuracions</Text>
-      <Text>Aqui va a ir los swtich para cambiar de oscuro a claro</Text>
-      <Text>Algo como guardar prefrecnecnias y etc etc</Text>
-    </View>
+    <ScrollView contentContainerStyle={styles.container}>
+      <SettingsPanel
+        notificationsEnabled={notificationsEnabled}
+        onToggleNotifications={handleToggleNotifications}
+        calendarSyncEnabled={calendarSyncEnabled}
+        onToggleCalendarSync={handleToggleCalendarSync}
+        onResetApp={handleResetApp}
+      />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexGrow: 1,
+    padding: 16,
     backgroundColor: '#f0f0f0',
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
   },
 });
