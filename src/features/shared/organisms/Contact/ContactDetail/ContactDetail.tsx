@@ -38,10 +38,19 @@ export default function ContactDetailView({ contactId }: ContactDetailViewProps)
   return (
     <View style={styles.container}>
       <ProfileHeader name={`ID: ${contactId}`} imageUri={''} onBack={handleBack} />
-      <NoteField note={note} onChangeText={setNote} onSave={handleSaveNote} />
-      <PrioritySelector priority={priority} onChangePriority={handleChangePriority} />
-      <Button onClick={handleScheduleReminder}>
-        <Text>Agendar recordatorio</Text>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Notas del Contacto</Text>
+        <NoteField note={note} onChangeText={setNote} onSave={handleSaveNote} />
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Prioridad</Text>
+        <PrioritySelector priority={priority} onChangePriority={handleChangePriority} />
+      </View>
+
+      <Button onClick={handleScheduleReminder} style={styles.button}>
+        <Text style={styles.buttonText}>Agendar recordatorio</Text>
       </Button>
     </View>
   );
@@ -50,7 +59,35 @@ export default function ContactDetailView({ contactId }: ContactDetailViewProps)
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 16,
     padding: 16,
+    backgroundColor: '#F0F2F5',
+    gap: 24,
+  },
+  section: {
+    backgroundColor: '#FFFFFF',
+    padding: 16,
+    borderRadius: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    gap: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333333',
+  },
+  button: {
+    backgroundColor: '#007AFF',
+    paddingVertical: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
   },
 });

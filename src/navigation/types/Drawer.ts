@@ -5,9 +5,9 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 export type RootDrawerParamList = {
     //defino mis rutas principales en este caso deben ser las siguientes:
     index: undefined;
-    contacts: undefined;
-    calendar: undefined;
-    notifications: undefined;
+    contactsMain: undefined;
+    calendarMain: undefined;
+    notificationsMain: undefined;
     settings: undefined;
 }
 
