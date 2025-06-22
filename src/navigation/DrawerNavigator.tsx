@@ -64,7 +64,7 @@ export default function DrawerNavigation() {
                 }}
             />
             <Drawer.Screen
-                name="contacts"
+                name="contactsMain"
                 component={ContactStackNavigator}
                 options={{
                     title: 'Contactos',
@@ -74,7 +74,7 @@ export default function DrawerNavigation() {
                 }}
             />
             <Drawer.Screen
-                name="calendar"
+                name="calendarMain"
                 component={CalendarStackNavigator}
                 options={{
                     title: 'Calendario',
@@ -84,7 +84,7 @@ export default function DrawerNavigation() {
                 }}
             />
             <Drawer.Screen
-                name="notifications"
+                name="notificationsMain"
                 component={NotificationStackNavigator}
                 options={{
                     title: 'Notificaciones',

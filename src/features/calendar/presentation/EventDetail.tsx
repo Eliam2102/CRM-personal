@@ -1,10 +1,18 @@
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { RouteProp, useRoute } from '@react-navigation/native';
+import { StackCalendarParamList } from '../../../navigation/Calendar/types/types';
+import EventDetailView from '../../shared/organisms/Calendar/EventDetail/EventDetail';
 
-//creación del componente através de una funcion JSX 
+type EventDetailRouteProp = RouteProp<StackCalendarParamList, 'eventDetail'>;
+
 export default function EventDetailScreen() {
+  const route = useRoute<EventDetailRouteProp>();
+  const { id } = route.params;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Vista genérica para probar Stack</Text>
+      <EventDetailView eventId={id} />
     </View>
   );
 }
@@ -15,10 +23,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f0f0f0',
-  },
-  text: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
   },
 });

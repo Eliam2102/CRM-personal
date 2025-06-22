@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet } from 'react-native';
+import CalendarPanel from '../../shared/organisms/Calendar/CalendarPanel/CalendarPanel';
+
 
 export default function CalendarScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Vista para probar que aqui saldra el calendario</Text>
+      <CalendarPanel/>
     </View>
   );
 }
