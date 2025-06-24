@@ -8,9 +8,9 @@ export interface ContactRepository {
   //para obtener un solo contacto por medio del id
   getContactById(id: string): Promise<Contact | null>;
   //crear un contacto
-  createContact(contact: Contact): Promise<void>;
+  // createContact(contact: Contact): Promise<void>;
   //actualizar un contacto
-  updateContact(contact: Contact): Promise<void>;
+  // updateContact(contact: Contact): Promise<void>;
   //eliminar un contacto
-  deleteContact(id: string): Promise<void>;
+  // deleteContact(id: string): Promise<void>;
 }

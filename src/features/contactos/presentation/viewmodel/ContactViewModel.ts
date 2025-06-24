@@ -13,9 +13,9 @@ export const ContactViewModel = () => {
   // Casos de uso
   const getContactsUseCase = new GetContactsUseCase(repository);
   const getContactByIdUseCase = new GetContactByIdUseCase(repository);
-  const createContactUseCase = new CreateContactsUseCase(repository);
-  const updateContactUseCase = new UpdateContactsUseCase(repository);
-  const deleteContactUseCase = new DeleteContactUseCase(repository);
+  // const createContactUseCase = new CreateContactsUseCase(repository);
+  // const updateContactUseCase = new UpdateContactsUseCase(repository);
+  // const deleteContactUseCase = new DeleteContactUseCase(repository);
 
   // Estados
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -30,6 +30,7 @@ export const ContactViewModel = () => {
     try {
       const result = await getContactsUseCase.execute();
       setContacts(result);
+      console.log('Contactos obtenidos:', result);
     } catch (err) {
       setError('Error al cargar contactos.');
     } finally {
@@ -52,46 +53,46 @@ export const ContactViewModel = () => {
   }, []);
 
   // Crear contacto
-  const createContact = useCallback(async (contact: Contact) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await createContactUseCase.execute(contact);
-      await fetchContacts(); // Refrescar la lista
-    } catch (err) {
-      setError('Error al crear el contacto.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchContacts]);
+  // const createContact = useCallback(async (contact: Contact) => {
+  //   setIsLoading(true);
+  //   setError(null);
+  //   try {
+  //     await createContactUseCase.execute(contact);
+  //     await fetchContacts(); // Refrescar la lista
+  //   } catch (err) {
+  //     setError('Error al crear el contacto.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [fetchContacts]);
 
   // Actualizar contacto
-  const updateContact = useCallback(async (contact: Contact) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await updateContactUseCase.execute(contact);
-      await fetchContacts(); // Refrescar la lista
-    } catch (err) {
-      setError('Error al actualizar el contacto.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchContacts]);
+  // const updateContact = useCallback(async (contact: Contact) => {
+  //   setIsLoading(true);
+  //   setError(null);
+  //   try {
+  //     await updateContactUseCase.execute(contact);
+  //     await fetchContacts(); // Refrescar la lista
+  //   } catch (err) {
+  //     setError('Error al actualizar el contacto.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [fetchContacts]);
 
   // Eliminar contacto
-  const deleteContact = useCallback(async (id: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await deleteContactUseCase.execute(id);
-      await fetchContacts(); // Refrescar la lista
-    } catch (err) {
-      setError('Error al eliminar el contacto.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchContacts]);
+  // const deleteContact = useCallback(async (id: string) => {
+  //   setIsLoading(true);
+  //   setError(null);
+  //   try {
+  //     await deleteContactUseCase.execute(id);
+  //     await fetchContacts(); // Refrescar la lista
+  //   } catch (err) {
+  //     setError('Error al eliminar el contacto.');
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // }, [fetchContacts]);
 
   // Cargar contactos al iniciar
   useEffect(() => {
@@ -105,8 +106,8 @@ export const ContactViewModel = () => {
     error,
     fetchContacts,
     fetchContactById,
-    createContact,
-    updateContact,
-    deleteContact,
+    // createContact,
+    // updateContact,
+    // deleteContact,
   };
 };

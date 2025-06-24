@@ -1,5 +1,11 @@
 export interface ContactModel {
   id: string | undefined;
   name: string;
-  imageUri: string | undefined;
+  firstName: string;
+  lastName: string;
+  contactType: string;
+  imageAvailable: boolean;
+  imageUri?: string;
+  isFavorite: boolean;
+  lookupKey: string;
 }
