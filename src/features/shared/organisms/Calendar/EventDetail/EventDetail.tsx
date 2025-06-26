@@ -4,30 +4,20 @@ import ProfileHeader from '../../../molecules/Profile/ProfileHeader';
 import Button from '../../../atoms/Button/Button';
 import Text from '../../../atoms/Text/Text';
 import { useNavigation } from '@react-navigation/native';
+import { CalendarEvent } from '../../../../calendar/domain/entities/event';
 
 interface EventDetailViewProps {
-  eventId: string;
+  event: CalendarEvent;
 }
 
-// Datos dummy para el ejemplo
-const mockEventData = {
-  id: '1',
-  title: 'Reunión de Proyecto',
-  date: '15 Noviembre 2023',
-  time: '10:00 AM - 11:30 AM',
-  location: 'Sala de Conferencias A',
-  description: 'Revisión del avance del proyecto X con el equipo de desarrollo y stakeholders.',
-  organizer: 'Juan Pérez',
-};
-
-export default function EventDetailView({ eventId }: EventDetailViewProps) {
+export default function EventDetailView({ event }: EventDetailViewProps) {
   const navigation = useNavigation();
 
   const handleScheduleReminder = () => {
     Alert.alert(
       'Recordatorio Agendado',
-      `Se ha creado un recordatorio para el evento "${mockEventData.title}"`,
-      [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
+      `Se ha creado un recordatorio para el evento "${event.title}"`,
+      [{ text: 'OK' }]
     );
   };
 
@@ -39,7 +29,7 @@ export default function EventDetailView({ eventId }: EventDetailViewProps) {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <ProfileHeader 
-          name={mockEventData.title} 
+          name={event.title} 
           imageUri={''} 
           onBack={handleBack} 
         />
@@ -47,31 +37,30 @@ export default function EventDetailView({ eventId }: EventDetailViewProps) {
         <View style={styles.content}>
           <View style={styles.detailCard}>
             <Text style={styles.sectionTitle}>Información del Evento</Text>
-            
+
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Fecha:</Text>
-              <Text style={styles.detailValue}>{mockEventData.date}</Text>
+              <Text style={styles.detailValue}>
+                {event.startDate.toLocaleDateString()}
+              </Text>
             </View>
-            
+
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Hora:</Text>
-              <Text style={styles.detailValue}>{mockEventData.time}</Text>
+              <Text style={styles.detailValue}>
+                {event.startDate.toLocaleTimeString()} - {event.endDate.toLocaleTimeString()}
+              </Text>
             </View>
-            
+
             <View style={styles.detailRow}>
               <Text style={styles.detailLabel}>Lugar:</Text>
-              <Text style={styles.detailValue}>{mockEventData.location}</Text>
+              <Text style={styles.detailValue}>{event.location || 'Sin lugar'}</Text>
             </View>
-            
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Organizador:</Text>
-              <Text style={styles.detailValue}>{mockEventData.organizer}</Text>
-            </View>
-          </View>
 
-          <View style={styles.descriptionCard}>
-            <Text style={styles.sectionTitle}>Descripción</Text>
-            <Text style={styles.descriptionText}>{mockEventData.description}</Text>
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Notas:</Text>
+              <Text style={styles.detailValue}>{event.notes || 'Sin notas'}</Text>
+            </View>
           </View>
 
           <Button 
@@ -89,7 +78,7 @@ export default function EventDetailView({ eventId }: EventDetailViewProps) {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    backgroundColor: '#F5F5F5', // gris claro
+    backgroundColor: '#F5F5F5',
   },
   container: {
     flex: 1,
@@ -109,16 +98,10 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  descriptionCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 20,
-    marginBottom: 16,
-  },
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#007AFF', // azul primario
+    color: '#007AFF',
     marginBottom: 16,
   },
   detailRow: {
@@ -128,26 +111,21 @@ const styles = StyleSheet.create({
   },
   detailLabel: {
     fontSize: 16,
-    color: '#6E6E6E', // gris oscuro
+    color: '#6E6E6E',
     width: '40%',
   },
   detailValue: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#333333', // casi negro
+    color: '#333333',
     width: '60%',
     textAlign: 'right',
-  },
-  descriptionText: {
-    fontSize: 16,
-    color: '#333333',
-    lineHeight: 24,
   },
   button: {
     marginTop: 12,
     borderRadius: 8,
     paddingVertical: 12,
-    backgroundColor: '#007AFF', // azul primario
+    backgroundColor: '#007AFF',
     alignItems: 'center',
   },
   buttonText: {

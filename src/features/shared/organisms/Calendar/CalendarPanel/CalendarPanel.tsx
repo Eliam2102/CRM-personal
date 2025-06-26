@@ -7,26 +7,23 @@ import { CalendarStackNavigationProp } from '../../../../../navigation/Calendar/
 export interface EventType {
   id: string;
   title: string;
-  date: string;
+  startDate: Date;
+  endDate: Date;
 }
 
 interface CalendarPanelProps {
-  events?: EventType[]; // Hacemos la prop opcional para usar los dummies por defecto
+  events?: EventType[];
+  isLoading?: boolean;
+  error?: string | null;
 }
 
-export default function CalendarPanel({ events: propEvents }: CalendarPanelProps) {
+export default function CalendarPanel({ events: propEvents, isLoading, error }: CalendarPanelProps) {
   const navigation = useNavigation<CalendarStackNavigationProp>();
 
-  // Datos dummy (simulados)
-  const dummyEvents: EventType[] = [
-    { id: '1', title: 'Reunión de equipo', date: '2023-11-15 10:00' },
-    { id: '2', title: 'Presentación con cliente', date: '2023-11-16 14:30' },
-    { id: '3', title: 'Revisión de proyecto', date: '2023-11-17 09:15' },
-    { id: '4', title: 'Taller de capacitación', date: '2023-11-18 11:00' },
-    { id: '5', title: 'Entrega de avances', date: '2023-11-20 16:45' },
-  ];
+  const events = propEvents || [];
 
-  const events = propEvents || dummyEvents;
+  if (isLoading) return <Text>Cargando eventos...</Text>;
+  if (error) return <Text style={{ color: 'red' }}>{error}</Text>;
 
   return (
     <View style={styles.container}>
@@ -37,7 +34,7 @@ export default function CalendarPanel({ events: propEvents }: CalendarPanelProps
         renderItem={({ item }) => (
           <EventCard
             title={item.title}
-            date={item.date}
+            date={item.startDate.toLocaleString()}
             onPress={() => navigation.navigate('eventDetail', { id: item.id })}
           />
         )}

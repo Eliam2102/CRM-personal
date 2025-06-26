@@ -6,4 +6,5 @@ export interface CalendarEvent {
   endDate: Date;
   location?: string;
   notes?: string;
+  contactId?: string;
 }
