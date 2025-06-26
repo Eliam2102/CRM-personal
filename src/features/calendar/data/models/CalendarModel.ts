@@ -3,8 +3,11 @@
 export interface CalendarEventModel {
   id: string;
   title: string;
+  location: string;
+  notes: string;
   startDate: Date;
   endDate: Date;
-  location?: string;
-  notes?: string;
+  contactId: string;
+  organizer?: string;
+  attendees?: any[];
 }
