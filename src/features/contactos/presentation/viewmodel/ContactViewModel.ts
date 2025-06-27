@@ -39,18 +39,16 @@ export const ContactViewModel = () => {
   }, []);
 
   // Obtener contacto por ID
-  const fetchContactById = useCallback(async (id: string) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const result = await getContactByIdUseCase.execute(id);
-      setSelectedContact(result);
-    } catch (err) {
-      setError('Error al obtener el contacto.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const fetchContactById = useCallback(async (id: string): Promise<Contact | null> => {
+  try {
+    const result = await getContactByIdUseCase.execute(id);
+    setSelectedContact(result);
+    return result; // 👈 esto es importante
+  } catch (err) {
+    setError('Error al obtener el contacto.');
+    return null;
+  }
+}, []);
 
   // Crear contacto
   // const createContact = useCallback(async (contact: Contact) => {
