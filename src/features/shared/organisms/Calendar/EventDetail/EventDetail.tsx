@@ -1,10 +1,11 @@
-import React from 'react';
-import { View, StyleSheet, Alert, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import ProfileHeader from '../../../molecules/Profile/ProfileHeader';
 import Button from '../../../atoms/Button/Button';
 import Text from '../../../atoms/Text/Text';
 import { useNavigation } from '@react-navigation/native';
 import { CalendarEvent } from '../../../../calendar/domain/entities/event';
+import { ContactViewModel } from '../../../../contactos/presentation/viewmodel/ContactViewModel';
 
 interface EventDetailViewProps {
   event: CalendarEvent;
@@ -12,6 +13,21 @@ interface EventDetailViewProps {
 
 export default function EventDetailView({ event }: EventDetailViewProps) {
   const navigation = useNavigation();
+  const { fetchContactById, selectedContact, isLoading } = ContactViewModel();
+  const [contactName, setContactName] = useState<string>('Cargando...');
+
+  useEffect(() => {
+  const loadContactName = async () => {
+    if (event.contactId) {
+      const contacto = await fetchContactById(event.contactId);
+      setContactName(contacto?.name ?? 'No asignado');
+    } else {
+      setContactName('No asignado');
+    }
+  };
+
+  loadContactName();
+}, [event.contactId]);
 
   const handleScheduleReminder = () => {
     Alert.alert(
@@ -28,11 +44,7 @@ export default function EventDetailView({ event }: EventDetailViewProps) {
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        <ProfileHeader 
-          name={event.title} 
-          imageUri={''} 
-          onBack={handleBack} 
-        />
+        <ProfileHeader name={event.title} imageUri={''} onBack={handleBack} />
 
         <View style={styles.content}>
           <View style={styles.detailCard}>
@@ -61,12 +73,16 @@ export default function EventDetailView({ event }: EventDetailViewProps) {
               <Text style={styles.detailLabel}>Notas:</Text>
               <Text style={styles.detailValue}>{event.notes || 'Sin notas'}</Text>
             </View>
+
+            <View style={styles.detailRow}>
+              <Text style={styles.detailLabel}>Contacto:</Text>
+              <Text style={styles.detailValue}>
+                {isLoading ? 'Cargando...' : contactName}
+              </Text>
+            </View>
           </View>
 
-          <Button 
-            onClick={handleScheduleReminder}
-            style={styles.button}
-          >
+          <Button onClick={handleScheduleReminder} style={styles.button}>
             <Text style={styles.buttonText}>Agendar Recordatorio</Text>
           </Button>
         </View>
