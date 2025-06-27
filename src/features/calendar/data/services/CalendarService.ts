@@ -78,18 +78,27 @@ export class CalendarService {
 
   /** Transforma el evento del sistema al modelo personalizado */
   private transformEvent(event: any): CalendarEventModel {
-    return {
-      id: event.id,
-      title: event.title ?? 'Sin título',
-      contactId: '', // Campo no proporcionado por expo-calendar
-      startDate: new Date(event.startDate),
-      endDate: new Date(event.endDate),
-      location: event.location ?? '',
-      notes: event.notes ?? '',
-      organizer: event.organizer ?? '',
-      attendees: Array.isArray(event.attendees) ? event.attendees : [],
-    };
+  let parsedNotes = { contactId: '', description: '' };
+
+  try {
+    parsedNotes = JSON.parse(event.notes);
+  } catch {
+    // Si no es un JSON válido, lo tratamos como texto plano
+    parsedNotes.description = event.notes ?? '';
   }
+
+  return {
+    id: event.id,
+    title: event.title ?? 'Sin título',
+    contactId: parsedNotes.contactId ?? '',
+    startDate: new Date(event.startDate),
+    endDate: new Date(event.endDate),
+    location: event.location ?? '',
+    notes: parsedNotes.description ?? '',
+    organizer: event.organizer ?? '',
+    attendees: Array.isArray(event.attendees) ? event.attendees : [],
+  };
+}
 
   /** Crea un evento */
   async createEvent(event: CalendarEventModel): Promise<string> {
@@ -105,7 +114,10 @@ export class CalendarService {
       startDate: event.startDate,
       endDate: event.endDate,
       location: event.location,
-      notes: event.notes,
+      notes: JSON.stringify({
+        contactId: event.contactId,
+        description: event.notes,
+      }),
       timeZone: 'UTC',
     });
 
@@ -147,13 +159,16 @@ export class CalendarService {
   /** Actualiza evento existente */
   async updateEvent(event: CalendarEventModel): Promise<void> {
     await Calendar.updateEventAsync(event.id, {
-      title: event.title,
-      startDate: event.startDate,
-      endDate: event.endDate,
-      location: event.location,
-      notes: event.notes,
-      timeZone: 'UTC',
-    });
+          title: event.title,
+          startDate: event.startDate,
+          endDate: event.endDate,
+          location: event.location,
+          notes: JSON.stringify({
+            contactId: event.contactId,
+            description: event.notes,
+          }),
+          timeZone: 'UTC',
+        });
     console.log(' Evento actualizado con ID:', event.id);
   }
 
