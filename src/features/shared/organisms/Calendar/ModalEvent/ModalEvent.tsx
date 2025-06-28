@@ -1,14 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Modal,
-  View,
-  TextInput,
-  Button,
-  StyleSheet,
-  Alert,
-  Platform,
-  KeyboardAvoidingView,
-} from 'react-native';
+import { Modal,View,TextInput, Button, StyleSheet, Alert, Platform, KeyboardAvoidingView, } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Text from '../../../atoms/Text/Text';
@@ -48,18 +39,12 @@ const EventFormModal = ({
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownItems, setDropdownItems] = useState(
-    contacts.map(contact => ({
-      label: contact.name,
-      value: contact.id,
-    }))
+    contacts.map(contact => ({ label: contact.name, value: contact.id }))
   );
 
   useEffect(() => {
     setDropdownItems(
-      contacts.map(contact => ({
-        label: contact.name,
-        value: contact.id,
-      }))
+      contacts.map(contact => ({ label: contact.name, value: contact.id }))
     );
   }, [contacts]);
 
@@ -86,8 +71,7 @@ const EventFormModal = ({
   };
 
   const handleConfirm = (date: Date) => {
-    if (pickerType === 'start') setStartDate(date);
-    else setEndDate(date);
+    pickerType === 'start' ? setStartDate(date) : setEndDate(date);
     setPickerVisible(false);
   };
 
@@ -115,76 +99,65 @@ const EventFormModal = ({
   };
 
   return (
-    <Modal visible={visible} animationType="slide" transparent>
+    <Modal visible={visible} animationType="slide">
       <SafeAreaView style={styles.modalBackground}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         >
           <View style={styles.modalWrapper}>
-
             <KeyboardAwareScrollView
               contentContainerStyle={styles.scrollContainer}
               keyboardShouldPersistTaps="handled"
               enableOnAndroid
+              extraScrollHeight={20}
             >
-              <View style={styles.container}>
-                <Text style={styles.title}>{eventToEdit ? 'Editar Evento' : 'Nuevo Evento'}</Text>
+              <Text style={styles.title}>{eventToEdit ? 'Editar Evento' : 'Nuevo Evento'}</Text>
 
-                <Text style={styles.label}>Título</Text>
-                <TextInput
-                  style={styles.input}
-                  value={title}
-                  onChangeText={setTitle}
-                  placeholder="Ej. Reunión de equipo"
-                />
+              <Text style={styles.label}>Título</Text>
+              <TextInput
+                style={styles.input}
+                value={title}
+                onChangeText={setTitle}
+                placeholder="Ej. Reunión de equipo"
+              />
 
-                <Text style={styles.label}>Ubicación</Text>
-                <TextInput
-                  style={styles.input}
-                  value={location}
-                  onChangeText={setLocation}
-                  placeholder="Ej. Sala 4 o Zoom"
-                />
+              <Text style={styles.label}>Ubicación</Text>
+              <TextInput
+                style={styles.input}
+                value={location}
+                onChangeText={setLocation}
+                placeholder="Ej. Sala 4 o Zoom"
+              />
 
-                <Text style={styles.label}>Notas</Text>
-                <TextInput
-                  style={[styles.input, styles.multilineInput]}
-                  value={notes}
-                  onChangeText={setNotes}
-                  placeholder="Detalles adicionales..."
-                  multiline
-                />
+              <Text style={styles.label}>Notas</Text>
+              <TextInput
+                style={[styles.input, styles.multilineInput]}
+                value={notes}
+                onChangeText={setNotes}
+                placeholder="Detalles adicionales..."
+                multiline
+              />
 
-                <Button
-                  title={`Inicio: ${startDate.toLocaleString()}`}
-                  onPress={() => {
-                    setPickerType('start');
-                    setPickerVisible(true);
-                  }}
-                />
-                <Button
-                  title={`Fin: ${endDate.toLocaleString()}`}
-                  onPress={() => {
-                    setPickerType('end');
-                    setPickerVisible(true);
-                  }}
-                />
+              <Text style={styles.label}>Inicio</Text>
+              <Button
+                title={startDate.toLocaleString()}
+                onPress={() => {
+                  setPickerType('start');
+                  setPickerVisible(true);
+                }}
+              />
 
-                <View style={styles.buttonRow}>
-                  <Button title="Cancelar" onPress={onClose} color="#888" />
-                  <Button title="Guardar" onPress={handleSubmit} />
-                </View>
+              <Text style={styles.label}>Fin</Text>
+              <Button
+                title={endDate.toLocaleString()}
+                onPress={() => {
+                  setPickerType('end');
+                  setPickerVisible(true);
+                }}
+              />
 
-                {eventToEdit && onDelete && (
-                  <View style={styles.deleteButton}>
-                    <Button title="Eliminar evento" onPress={onDelete} color="red" />
-                  </View>
-                )}
-              </View>
-            </KeyboardAwareScrollView>
-            <View style={styles.dropdownWrapper}>
-              <Text style={styles.label}>Contacto relacionado</Text>
+              <Text style={styles.label}>Contacto</Text>
               <DropDownPicker
                 open={dropdownOpen}
                 value={contactId}
@@ -195,19 +168,29 @@ const EventFormModal = ({
                 placeholder="Selecciona un contacto"
                 style={styles.dropdown}
                 dropDownContainerStyle={styles.dropdownContainer}
-                zIndex={3000}
-                zIndexInverse={1000}
+                listMode="SCROLLVIEW"
               />
-            </View>
-          </View>
 
-          <DateTimePickerModal
-            isVisible={pickerVisible}
-            mode="datetime"
-            date={pickerType === 'start' ? startDate : endDate}
-            onConfirm={handleConfirm}
-            onCancel={() => setPickerVisible(false)}
-          />
+              <View style={styles.buttonRow}>
+                <Button title="Cancelar" onPress={onClose} color="#888" />
+                <Button title="Guardar" onPress={handleSubmit} />
+              </View>
+
+              {eventToEdit && onDelete && (
+                <View style={styles.deleteButton}>
+                  <Button title="Eliminar evento" onPress={onDelete} color="red" />
+                </View>
+              )}
+            </KeyboardAwareScrollView>
+
+            <DateTimePickerModal
+              isVisible={pickerVisible}
+              mode="datetime"
+              date={pickerType === 'start' ? startDate : endDate}
+              onConfirm={handleConfirm}
+              onCancel={() => setPickerVisible(false)}
+            />
+          </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
     </Modal>
@@ -216,76 +199,64 @@ const EventFormModal = ({
 
 export default EventFormModal;
 
+
 const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
-    backgroundColor: '#00000099',
+    backgroundColor: '#ffff',
   },
   modalWrapper: {
     flex: 1,
     padding: 16,
     justifyContent: 'center',
-    overflow: 'visible',
   },
   scrollContainer: {
     flexGrow: 1,
-    paddingBottom: 40,
-  },
-  container: {
-    backgroundColor: '#FFF',
-    borderRadius: 16,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 5,
-    marginTop: 16,
+    paddingBottom: 32,
   },
   title: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
-    marginBottom: 16,
+    marginBottom: 18,
     textAlign: 'center',
+    color: '#000',
   },
   label: {
     fontWeight: '600',
-    color: 'white',
+    color: '#444',
     fontSize: 14,
     marginBottom: 6,
-    marginTop: 10,
+    marginTop: 14,
   },
   input: {
     borderWidth: 1,
-    borderColor: '#CCC',
+    borderColor: '#DDD',
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
+    paddingVertical: Platform.OS === 'ios' ? 10 : 8,
+    borderRadius: 10,
     fontSize: 14,
     backgroundColor: '#F9F9F9',
   },
   multilineInput: {
-    height: 80,
+    height: 90,
     textAlignVertical: 'top',
   },
-  dropdownWrapper: {
-    zIndex: 3000,
-    paddingHorizontal: 16,
-    marginBottom: 200,
-  },
   dropdown: {
-    borderColor: '#CCC',
+    borderColor: '#DDD',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 10,
     height: 50,
     backgroundColor: '#F9F9F9',
+    marginTop: 4,
   },
   dropdownContainer: {
-    borderColor: '#CCC',
+    borderColor: '#DDD',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 10,
     marginTop: 4,
     backgroundColor: '#FFF',
+    zIndex: 2000,
   },
   buttonRow: {
     flexDirection: 'row',
@@ -294,6 +265,6 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   deleteButton: {
-    marginTop: 16,
+    marginTop: 20,
   },
 });

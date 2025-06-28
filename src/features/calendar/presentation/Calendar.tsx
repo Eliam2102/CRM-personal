@@ -2,37 +2,42 @@ import React, { useCallback, useState } from 'react';
 import { View, StyleSheet, Button, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
+import * as Notifications from 'expo-notifications';
+import { Alert } from 'react-native';
+
 
 import CalendarPanel from '../../shared/organisms/Calendar/CalendarPanel/CalendarPanel';
 import { CalendarViewModel } from './viewmodel/CalendarViewModel';
 import { CalendarEvent } from '../domain/entities/event';
 import EventFormModal from '../../shared/organisms/Calendar/ModalEvent/ModalEvent';
 import { ContactViewModel } from '../../contactos/presentation/viewmodel/ContactViewModel';
+import { useNotificationViewModel } from '../../notifications/presentation/viewmodels/notificationViewModel';
 
 export default function CalendarScreen() {
   const { events, isLoading, error, createEvent, fetchEvents } = CalendarViewModel();
   const { contacts, isLoading: contactsLoading, error: contactsError } = ContactViewModel();
+  const { createNotification } = useNotificationViewModel();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      console.log('📥 useFocusEffect - Fetching events...');
+      console.log(' useFocusEffect - Fetching events...');
       fetchEvents();
     }, [])
   );
 
-  const handleSubmitEvent = async (newEvent: CalendarEvent) => {
-    console.log('📤 Evento recibido en handleSubmitEvent:', newEvent);
-    console.log('🔍 contactId:', newEvent.contactId);
-
-    await createEvent(newEvent);
-    console.log('✅ Evento enviado a createEvent');
-
+const handleSubmitEvent = async (newEvent: CalendarEvent) => {
+  try {
+    const { eventId, notificationId } = await createEvent(newEvent);
+    console.log('Evento creado con ID:', eventId);
+    console.log('Notificación creada con ID:', notificationId);
     await fetchEvents();
-    console.log('🔄 Eventos recargados');
-
     setIsModalVisible(false);
-  };
+  } catch (error) {
+    Alert.alert('Error', 'No se pudo crear el evento');
+  }
+};
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -45,7 +50,7 @@ export default function CalendarScreen() {
             <Button
               title="Nuevo +"
               onPress={() => {
-                console.log('🟢 Abriendo modal de nuevo evento');
+                console.log('Abriendo modal de nuevo evento');
                 setIsModalVisible(true);
               }}
             />
@@ -57,7 +62,7 @@ export default function CalendarScreen() {
         <EventFormModal
           visible={isModalVisible}
           onClose={() => {
-            console.log('🔴 Modal cerrado sin guardar');
+            console.log('Modal cerrado sin guardar');
             setIsModalVisible(false);
           }}
           onSubmit={handleSubmitEvent}

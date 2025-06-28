@@ -2,9 +2,10 @@ import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import ContactCard from '../../molecules/Cards/ContactCard/ContactCard';
 import EventCard from '../../molecules/Cards/EventCard/EventCard';
-import NotificationCard from '../../molecules/Cards/NotificationCard/NotificationCard';
+import { useNavigation } from '@react-navigation/native';
 import Button from '../../atoms/Button/Button';
 import Text from '../../atoms/Text/Text';
+import { DrawerNavProp } from '../../../../navigation/types/Drawer';
 
 interface DashboardProps {
   contacts: { name: string; imageUri?: string; onPress: () => void }[];
@@ -16,53 +17,38 @@ interface DashboardProps {
   onNavigateSettings: () => void;
 }
 
-export default function Dashboard({
-  contacts,
-  events,
-  notifications,
-  onNavigateContacts,
-  onNavigateCalendar,
-  onNavigateNotifications,
-  onNavigateSettings,
-}: DashboardProps) {
+
+export default function Dashboard({ contacts, events, notifications,}: DashboardProps) {
+    
+  const navigation = useNavigation<DrawerNavProp>();
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Contactos */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Contactos sugeridos</Text>
+        <Text style={styles.sectionTitle}>Últimos contactos:</Text>
         {contacts.map((contact, index) => (
           <ContactCard key={index} {...contact} />
         ))}
-        <Button onClick={onNavigateContacts} style={styles.button}>
+        <Button onClick={() => navigation.navigate('contactsMain')} style={styles.button}>
           <Text style={styles.buttonText}>Ver todos los contactos</Text>
         </Button>
       </View>
 
       {/* Eventos */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Eventos próximos</Text>
+        <Text style={styles.sectionTitle}>Eventos próximos:</Text>
         {events.map((event, index) => (
           <EventCard key={index} {...event} />
         ))}
-        <Button onClick={onNavigateCalendar} style={styles.button}>
+        <Button onClick={() => navigation.navigate('calendarMain')} style={styles.button}>
           <Text style={styles.buttonText}>Ver todo el calendario</Text>
-        </Button>
-      </View>
-
-      {/* Notificaciones */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Notificaciones activas</Text>
-        {notifications.map((notification, index) => (
-          <NotificationCard key={index} {...notification} />
-        ))}
-        <Button onClick={onNavigateNotifications} style={styles.button}>
-          <Text style={styles.buttonText}>Ver todas las notificaciones</Text>
         </Button>
       </View>
 
       {/* Configuración */}
       <View style={styles.section}>
-        <Button onClick={onNavigateSettings} style={styles.settingsButton}>
+        <Button onClick={() => navigation.navigate('settingsMain')} style={styles.settingsButton}>
           <Text style={styles.settingsButtonText}>Ir a configuración</Text>
         </Button>
       </View>

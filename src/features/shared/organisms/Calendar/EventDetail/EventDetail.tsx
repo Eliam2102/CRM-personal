@@ -29,14 +29,6 @@ export default function EventDetailView({ event }: EventDetailViewProps) {
   loadContactName();
 }, [event.contactId]);
 
-  const handleScheduleReminder = () => {
-    Alert.alert(
-      'Recordatorio Agendado',
-      `Se ha creado un recordatorio para el evento "${event.title}"`,
-      [{ text: 'OK' }]
-    );
-  };
-
   const handleBack = () => {
     navigation.goBack();
   };
@@ -81,10 +73,6 @@ export default function EventDetailView({ event }: EventDetailViewProps) {
               </Text>
             </View>
           </View>
-
-          <Button onClick={handleScheduleReminder} style={styles.button}>
-            <Text style={styles.buttonText}>Agendar Recordatorio</Text>
-          </Button>
         </View>
       </View>
     </ScrollView>
