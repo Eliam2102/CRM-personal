@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ProfileHeader from '../../../molecules/Profile/ProfileHeader';
-import NoteField from '../../../molecules/Field/NoteField';
-import PrioritySelector from '../../../molecules/Selector/PrioritySelector';
 import Button from '../../../atoms/Button/Button';
 import Text from '../../../atoms/Text/Text';
 import { Contact } from '../../../../contactos/domain/entities/contact';
@@ -14,20 +12,6 @@ interface ContactDetailViewProps {
 
 export default function ContactDetailView({ contact }: ContactDetailViewProps) {
   const navigation = useNavigation();
-
-  const [note, setNote] = useState('');
-  const [priority, setPriority] = useState('Alta');
-
-  const handleSaveNote = () => {
-    Alert.alert('Nota guardada', `Nota: ${note}`);
-  };
-
-  const handleChangePriority = () => {
-    const newPriority = priority === 'Alta' ? 'Media' : priority === 'Media' ? 'Baja' : 'Alta';
-    setPriority(newPriority);
-    Alert.alert('Prioridad cambiada', `Nueva prioridad: ${newPriority}`);
-  };
-
   const handleScheduleReminder = () => {
     Alert.alert('Recordatorio', 'Recordatorio agendado (dummy)');
   };
@@ -54,19 +38,8 @@ export default function ContactDetailView({ contact }: ContactDetailViewProps) {
       <Text style={styles.value}>{contact.contactType}</Text>
 
       <Text style={styles.label}>Es favorito:</Text>
-      <Text style={styles.value}>{contact.isFavorite ? 'Sí' : 'No'}</Text>
+      <Text style={styles.value}>{contact.isFavorite ? '❤️' : '🤍'}</Text>
     </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Notas del Contacto</Text>
-        <NoteField note={note} onChangeText={setNote} onSave={handleSaveNote} />
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Prioridad</Text>
-        <PrioritySelector priority={priority} onChangePriority={handleChangePriority} />
-      </View>
-
       <Button onClick={handleScheduleReminder} style={styles.button}>
         <Text style={styles.buttonText}>Agendar recordatorio</Text>
       </Button>
