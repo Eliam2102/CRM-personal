@@ -15,9 +15,10 @@ export class EventRepositoryImpl implements CalendarRepository {
     return await this.service.getEventById(id);
   }
 
-  async createEvent(event: CalendarEventModel): Promise<void> {
-    await this.service.createEvent(event);
+  async createEvent(event: CalendarEventModel): Promise<string> {
+    return await this.service.createEvent(event);
   }
+
 
   async updateEvent(event: CalendarEventModel): Promise<void> {
     await this.service.updateEvent(event);

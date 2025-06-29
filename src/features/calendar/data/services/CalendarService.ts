@@ -1,4 +1,5 @@
 import * as Calendar from 'expo-calendar';
+import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import { CalendarEventModel } from '../models/CalendarModel';
 
@@ -15,14 +16,13 @@ export class CalendarService {
       return;
     }
 
-    // Si ya existe calendarId, no lo vuelvas a crear
     if (!this.calendarId) {
       this.calendarId = await this.getOrCreateCalendarId();
       console.log('Calendario inicializado con id:', this.calendarId);
     }
   }
 
-  /** Solicita permisos al usuario */
+  /** Solicita permisos al usuario para calendario */
   async requestPermissions(): Promise<boolean> {
     try {
       const { status } = await Calendar.requestCalendarPermissionsAsync();
@@ -33,21 +33,15 @@ export class CalendarService {
     }
   }
 
-  /** Busca un único calendario llamado "CRM Calendar" o lo crea */
+  /** Busca o crea un único calendario llamado "CRM Calendar" */
   private async getOrCreateCalendarId(): Promise<string> {
     const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
-
-    // Filtrar por nombre único
     const existing = calendars.find(
       cal => cal.name === 'CRM Calendar' && cal.title === 'CRM Calendar'
     );
 
-    if (existing) {
-      console.log('📅Calendario encontrado con ID:', existing.id);
-      return existing.id;
-    }
+    if (existing) return existing.id;
 
-    // Configura source correctamente
     let source: Calendar.Source;
     if (Platform.OS === 'ios') {
       const defaultCalendar = await Calendar.getDefaultCalendarAsync();
@@ -60,8 +54,7 @@ export class CalendarService {
       };
     }
 
-    // Crear nuevo calendario
-    const newCalendarId = await Calendar.createCalendarAsync({
+    return await Calendar.createCalendarAsync({
       title: 'CRM Calendar',
       name: 'CRM Calendar',
       color: '#2196f3',
@@ -71,44 +64,53 @@ export class CalendarService {
       ownerAccount: 'personal',
       timeZone: 'UTC',
     });
-
-    console.log('Calendario creado con ID:', newCalendarId);
-    return newCalendarId;
   }
 
-  /** Transforma el evento del sistema al modelo personalizado */
+  /** Transforma evento nativo a modelo personalizado */
   private transformEvent(event: any): CalendarEventModel {
-  let parsedNotes = { contactId: '', description: '' };
+    let parsedNotes = { contactId: '', description: '', notificationId: '' };
 
-  try {
-    parsedNotes = JSON.parse(event.notes);
-  } catch {
-    // Si no es un JSON válido, lo tratamos como texto plano
-    parsedNotes.description = event.notes ?? '';
+    try {
+      parsedNotes = JSON.parse(event.notes);
+    } catch {
+      parsedNotes.description = event.notes ?? '';
+    }
+
+    return {
+      id: event.id,
+      title: event.title ?? 'Sin título',
+      contactId: parsedNotes.contactId ?? '',
+      startDate: new Date(event.startDate),
+      endDate: new Date(event.endDate),
+      location: event.location ?? '',
+      notes: parsedNotes.description ?? '',
+      organizer: event.organizer ?? '',
+      attendees: Array.isArray(event.attendees) ? event.attendees : [],
+      notificationId: parsedNotes.notificationId,
+    };
   }
 
-  return {
-    id: event.id,
-    title: event.title ?? 'Sin título',
-    contactId: parsedNotes.contactId ?? '',
-    startDate: new Date(event.startDate),
-    endDate: new Date(event.endDate),
-    location: event.location ?? '',
-    notes: parsedNotes.description ?? '',
-    organizer: event.organizer ?? '',
-    attendees: Array.isArray(event.attendees) ? event.attendees : [],
-  };
-}
-
-  /** Crea un evento */
-  async createEvent(event: CalendarEventModel): Promise<string> {
+  /** Crea un evento de calendario y una notificación programada asociada */
+  async createEvent(event: CalendarEventModel): Promise<{ eventId: string; notificationId: string }> {
     if (!this.calendarId) {
       await this.init();
       if (!this.calendarId) throw new Error('No se pudo obtener calendarId');
     }
 
-    console.log(' Creando evento en calendarId:', this.calendarId);
+    // Programar notificación 10 minutos antes
+    const trigger = new Date(event.startDate.getTime() - 10 * 60 * 1000);
+    const notificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: event.title,
+        body: event.notes,
+        sound: 'default',
+      },
+      trigger,
+    });
 
+    console.log('Notificación programada con ID:', notificationId);
+
+    // Crear evento de calendario con notificationId en notes
     const eventId = await Calendar.createEventAsync(this.calendarId, {
       title: event.title,
       startDate: event.startDate,
@@ -117,35 +119,30 @@ export class CalendarService {
       notes: JSON.stringify({
         contactId: event.contactId,
         description: event.notes,
+        notificationId: event.notificationId,
       }),
       timeZone: 'UTC',
     });
 
-    console.log(' Evento creado con ID:', eventId);
-    return eventId;
+    console.log('Evento creado con ID:', eventId);
+    return { eventId, notificationId };
   }
 
-  /** Obtiene eventos entre hoy y 1 año adelante */
+  /** Obtiene todos los eventos del calendario */
   async getEvents(): Promise<CalendarEventModel[]> {
     if (!this.calendarId) {
       await this.init();
-      if (!this.calendarId) {
-        console.warn(' No hay calendarId disponible');
-        return [];
-      }
+      if (!this.calendarId) return [];
     }
 
-    console.log('📥 Leyendo eventos desde calendarId:', this.calendarId);
-
-   const now = new Date(2000, 0, 1);
-   const future = new Date(2100, 11, 31);
+    const now = new Date(2000, 0, 1);
+    const future = new Date(2100, 11, 31);
 
     const events = await Calendar.getEventsAsync([this.calendarId], now, future);
-    console.log(`📦 ${events.length} eventos obtenidos`);
     return events.map(this.transformEvent);
   }
 
-  /** Obtiene un evento por ID */
+  /** Obtiene evento por su ID */
   async getEventById(id: string): Promise<CalendarEventModel | null> {
     try {
       const event = await Calendar.getEventAsync(id);
@@ -156,47 +153,76 @@ export class CalendarService {
     }
   }
 
-  /** Actualiza evento existente */
-  async updateEvent(event: CalendarEventModel): Promise<void> {
+  /** Actualiza evento existente, reprograma notificación */
+  async updateEvent(event: CalendarEventModel): Promise<string> {
+    // Cancelar notificación anterior
+    if (event.notificationId) {
+      await Notifications.cancelScheduledNotificationAsync(event.notificationId);
+      console.log('Notificación cancelada:', event.notificationId);
+    }
+
+    // Programar nueva notificación
+    const trigger = new Date(event.startDate.getTime() - 10 * 60 * 1000);
+    const newNotificationId = await Notifications.scheduleNotificationAsync({
+      content: {
+        title: event.title,
+        body: event.notes,
+        sound: 'default',
+      },
+      trigger,
+    });
+
+    console.log('Nueva notificación programada:', newNotificationId);
+
+    // Actualizar evento en calendario
     await Calendar.updateEventAsync(event.id, {
-          title: event.title,
-          startDate: event.startDate,
-          endDate: event.endDate,
-          location: event.location,
-          notes: JSON.stringify({
-            contactId: event.contactId,
-            description: event.notes,
-          }),
-          timeZone: 'UTC',
-        });
-    console.log(' Evento actualizado con ID:', event.id);
+      title: event.title,
+      startDate: event.startDate,
+      endDate: event.endDate,
+      location: event.location,
+      notes: JSON.stringify({
+        contactId: event.contactId,
+        description: event.notes,
+        notificationId: newNotificationId,
+      }),
+      timeZone: 'UTC',
+    });
+
+    console.log(' Evento actualizado:', event.id);
+    return newNotificationId;
   }
 
-  /** Elimina un evento por ID */
+  /** Elimina evento por ID y cancela su notificación */
   async deleteEvent(eventId: string): Promise<void> {
+    const event = await this.getEventById(eventId);
+    if (event?.notificationId) {
+      await Notifications.cancelScheduledNotificationAsync(event.notificationId);
+      console.log('Notificación cancelada:', event.notificationId);
+    }
+
     await Calendar.deleteEventAsync(eventId);
-    console.log(' Evento eliminado con ID:', eventId);
+    console.log('Evento eliminado:', eventId);
   }
 
-  /** Método para depuración: lista todos los calendarios y eventos */
+  /** Depuración: lista todos los calendarios y sus eventos */
   async debugCalendarsAndEvents(): Promise<void> {
     const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
     console.log('Lista de calendarios:');
 
     for (const calendar of calendars) {
-      console.log(`📘 ${calendar.title} (ID: ${calendar.id})`);
+      console.log(`${calendar.title} (ID: ${calendar.id})`);
+
+      const now = new Date();
+      const future = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
 
       try {
-        const now = new Date();
-        const future = new Date(now.getFullYear() + 1, now.getMonth(), now.getDate());
         const events = await Calendar.getEventsAsync([calendar.id], now, future);
-
         console.log(`   → ${events.length} eventos`);
         for (const e of events) {
-          console.log(`     • ${e.title} | ${new Date(e.startDate).toLocaleString()} - ${new Date(e.endDate).toLocaleString()}`);
+          console.log(`     • ${e.title} | ${new Date(e.startDate).toLocaleString()}`);
         }
       } catch (error) {
-        console.warn('Error leyendo eventos para calendario:', calendar.id, error);
+        console.warn('Error leyendo eventos de calendario:', calendar.id, error);
       }
     }
   }

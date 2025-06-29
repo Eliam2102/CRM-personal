@@ -9,5 +9,6 @@ export interface CalendarEventModel {
   endDate: Date;
   contactId: string;
   organizer?: string;
+  notificationId?: string;
   attendees?: any[];
 }

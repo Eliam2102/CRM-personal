@@ -48,18 +48,21 @@ export const CalendarViewModel = () => {
     }
   }, []);
 
-  const createEvent = useCallback(async (event: CalendarEvent) => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await addEventUseCase.execute(event);
-      await fetchEvents();
-    } catch (err) {
-      setError('Error al crear el evento.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [fetchEvents]);
+  const createEvent = useCallback(async (event: CalendarEvent): Promise<string | undefined> => {
+  setIsLoading(true);
+  setError(null);
+  try {
+    const eventId = await addEventUseCase.execute(event);
+    await fetchEvents();
+    return eventId;
+  } catch (err) {
+    setError('Error al crear el evento.');
+    return undefined;
+  } finally {
+    setIsLoading(false);
+  }
+}, [fetchEvents]);
+
 
   const updateEvent = useCallback(async (event: CalendarEvent) => {
     setIsLoading(true);

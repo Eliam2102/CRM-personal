@@ -8,7 +8,7 @@ export class AddEventUseCase {
     constructor(private repository: CalendarRepository){}
 
     //metood para poder crear un evento
-    async execute(event: CalendarEvent): Promise<void>{
+    async execute(event: CalendarEvent): Promise<string>{
         return this.repository.createEvent(event);
     }
 }
