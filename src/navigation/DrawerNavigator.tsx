@@ -23,12 +23,16 @@ import SettingsStackNavigation from "./Main/StackNavigator";
 import ContactStackNavigator from "./Contact/StackContactNavigator";
 //final de la región pra importar las pantallas
 
+//tema
+import { useTheme } from "../common/hooks/theme";
+
 
 //instnaciar el metodo createDrawwer en una constante para usarlo de manera mas sencilla y tiparlo con nuestro tipado de rutas.
 const Drawer = createDrawerNavigator<RootDrawerParamList>();
 
 //creamos el compoentne através de una función JSX
 export default function DrawerNavigation() {
+    const theme = useTheme(); 
     return (
         <SafeAreaView style={styles.safeArea} edges={['top']}>
         {/* //usamos lo que instanciamos por fuer auqe es DRwer para crear yponemos .Navigator y cerramos */}
@@ -38,15 +42,15 @@ export default function DrawerNavigation() {
             //se usa esto siemrpe para poder configurar el drawer o darle estilos
             screenOptions={{
                 headerStyle: {
-                    backgroundColor: '#BDE0FE', //este color es del header
+                    backgroundColor: theme.surface, //este color es del header
                 },
                 headerStatusBarHeight: 0, //no se vea muy ancho el header
-                headerTintColor: '#333333', //este color es para la letras del header
+                headerTintColor: theme.onSurface, //este color es para la letras del header
                 drawerStyle: {
-                    backgroundColor: '#FFFFFF',  //color de la pestañan de las opciones del drawer
+                    backgroundColor: theme.surface,  //color de la pestañan de las opciones del drawer
                 },
-                drawerActiveTintColor: '#0077B6', //cuando estas posicionado en una ruta y coincide con la del drawer se marca
-                drawerInactiveTintColor: '#8E8E8E', //estos son los normales, los uqe no estan en uso 
+                drawerActiveTintColor: theme.primary, //cuando estas posicionado en una ruta y coincide con la del drawer se marca
+                drawerInactiveTintColor: theme.onSurface, //estos son los normales, los uqe no estan en uso 
                 drawerLabelStyle: {
                     fontWeight: 'bold', //peso de la fuente 'bold' es como negritas un poco mas gruesa
                     fontSize: 16, //tanaño de la fuente 

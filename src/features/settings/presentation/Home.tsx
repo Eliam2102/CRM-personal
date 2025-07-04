@@ -5,7 +5,7 @@ import { CalendarViewModel } from '../../calendar/presentation/viewmodel/Calenda
 import { ContactViewModel } from '../../contactos/presentation/viewmodel/ContactViewModel';
 import { useNavigation } from '@react-navigation/native';
 import { DrawerNavProp } from '../../../navigation/types/Drawer';
-
+import { useTheme } from '../../../common/hooks/theme';
 
 
 function getRandomItems<T>(arr: T[], count: number): T[] {
@@ -14,6 +14,7 @@ function getRandomItems<T>(arr: T[], count: number): T[] {
 }
 
 export default function HomeScreen() {
+  const theme = useTheme();
   const navigation = useNavigation<DrawerNavProp>();
 
   const { events, fetchEvents } = CalendarViewModel();
@@ -39,19 +40,30 @@ export default function HomeScreen() {
   // Próximos 5 eventos ordenados por fecha de inicio
   console.log('Eventos raw:', events);
 
-  const upcomingEvents = events
-    .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
-    .slice(0, 5)
-    .map(event => ({
-      title: event.title,
-      date: new Date(event.startDate).toLocaleDateString(),
-      onPress: () => console.log(`Ver evento ${event.title}`),
-    }));
+  const today = new Date();
+
+// nrmaliza la fecha 
+today.setHours(0, 0, 0, 0);
+
+//eventos proximos
+const upcomingEvents = events
+  .filter(event => {
+    const eventDate = new Date(event.startDate);
+    eventDate.setHours(0, 0, 0, 0);
+    return eventDate >= today;
+  })
+  .sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime())
+  .slice(0, 5)
+  .map(event => ({
+    title: event.title,
+    date: new Date(event.startDate).toLocaleDateString(),
+    onPress: () => console.log(`Ver evento ${event.title}`),
+  }));
 
   console.log('Eventos a mostrar:', upcomingEvents);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
       <Dashboard
         contacts={contactsForDashboard}
         events={upcomingEvents}
