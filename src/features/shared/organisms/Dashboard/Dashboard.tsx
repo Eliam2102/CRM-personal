@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import ContactCard from '../../molecules/Cards/ContactCard/ContactCard';
-import EventCard from '../../molecules/Cards/EventCard/EventCard';
-import { useNavigation } from '@react-navigation/native';
-import Button from '../../atoms/Button/Button';
 import Text from '../../atoms/Text/Text';
+import Button from '../../atoms/Button/Button';
+import MiniCalendar from '../../../../common/components/calendar/calendar';
+import { useNavigation } from '@react-navigation/native';
 import { DrawerNavProp } from '../../../../navigation/types/Drawer';
+import { useTheme } from '../../../../common/hooks/theme';
 
 interface DashboardProps {
   contacts: { name: string; imageUri?: string; onPress: () => void }[];
@@ -17,41 +18,51 @@ interface DashboardProps {
   onNavigateSettings: () => void;
 }
 
-
-export default function Dashboard({ contacts, events, notifications,}: DashboardProps) {
-    
+export default function Dashboard({ contacts, events, notifications, onNavigateContacts, onNavigateCalendar }: DashboardProps) {
   const navigation = useNavigation<DrawerNavProp>();
+  const theme = useTheme();
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {/* Contactos */}
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
+      
+      {/* Bienvenida */}
+      <View style={styles.header}>
+        <Text style={[styles.title, { color: theme.onBackground }]}>Bienvenido de nuevo</Text>
+        <Text style={[styles.subtitle, { color: theme.onSurface }]}>Aquí tienes un resumen de tu actividad:</Text>
+      </View>
+
+      {/* KPIs */}
+      <View style={styles.kpiContainer}>
+        <View style={[styles.kpiBox, { backgroundColor: theme.surface }]}>
+          <Text style={[styles.kpiNumber, {color: theme.onSurface}]}>{contacts.length}</Text>
+          <Text style={styles.kpiLabel}>Contactos</Text>
+        </View>
+        <View style={[styles.kpiBox, { backgroundColor: theme.surface }]}>
+          <Text style={[styles.kpiNumber, , {color: theme.onSurface}]}>{events.length}</Text>
+          <Text style={styles.kpiLabel}>Eventos</Text>
+        </View>
+      </View>
+
+      {/* Mini calendario */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Últimos contactos:</Text>
-        {contacts.map((contact, index) => (
-          <ContactCard key={index} {...contact} />
-        ))}
-        <Button onClick={() => navigation.navigate('contactsMain')} style={styles.button}>
-          <Text style={styles.buttonText}>Ver todos los contactos</Text>
+        <Text style={[styles.sectionTitle, { color: theme.onBackground }]}>Calendario</Text>
+        <MiniCalendar events={events} />
+        <Button onClick={onNavigateCalendar} style={[styles.button, { backgroundColor: theme.primary }]}>
+          <Text style={[styles.buttonText, { color: theme.onPrimary }]}>Ver todo el calendario</Text>
         </Button>
       </View>
 
-      {/* Eventos */}
+      {/* Contactos recientes */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Eventos próximos:</Text>
-        {events.map((event, index) => (
-          <EventCard key={index} {...event} />
+        <Text style={[styles.sectionTitle, { color: theme.onBackground }]}>Últimos contactos</Text>
+        {contacts.slice(0, 3).map((contact, i) => (
+          <ContactCard key={i} {...contact} />
         ))}
-        <Button onClick={() => navigation.navigate('calendarMain')} style={styles.button}>
-          <Text style={styles.buttonText}>Ver todo el calendario</Text>
+        <Button onClick={onNavigateContacts} style={[styles.button, { backgroundColor: theme.primary }]}>
+          <Text style={[styles.buttonText, { color: theme.onPrimary }]}>Ver todos los contactos</Text>
         </Button>
       </View>
-
-      {/* Configuración */}
-      <View style={styles.section}>
-        <Button onClick={() => navigation.navigate('settingsMain')} style={styles.settingsButton}>
-          <Text style={styles.settingsButtonText}>Ir a configuración</Text>
-        </Button>
-      </View>
+      
     </ScrollView>
   );
 }
@@ -60,36 +71,49 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     gap: 24,
-    backgroundColor: '#f9f9f9',
+  },
+  header: {
+    gap: 4,
+  },
+  title: {
+    fontSize: 22,
+    fontWeight: '700',
+  },
+  subtitle: {
+    fontSize: 14,
+  },
+  kpiContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  kpiBox: {
+    flex: 1,
+    borderRadius: 12,
+    padding: 16,
+    alignItems: 'center',
+    elevation: 2,
+  },
+  kpiNumber: {
+    fontSize: 20,
+    fontWeight: '700',
+  },
+  kpiLabel: {
+    fontSize: 14,
+    color: '#666',
   },
   section: {
     gap: 12,
-    marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
+    fontSize: 18,
+    fontWeight: '600',
   },
   button: {
-    backgroundColor: '#007BFF',
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
   },
   buttonText: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-  settingsButton: {
-    backgroundColor: '#555',
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  settingsButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+    fontWeight: '600',
   },
 });
