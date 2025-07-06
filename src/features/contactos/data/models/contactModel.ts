@@ -1,11 +1,14 @@
 export interface ContactModel {
-  id: string | undefined;
+  id: string;
   name: string;
-  firstName: string;
-  lastName: string;
-  contactType: string;
-  imageAvailable: boolean;
   imageUri?: string;
-  isFavorite: boolean;
-  lookupKey: string;
+  contactType?: 'person' | 'company';
+  firstName?: string;
+  lastName?: string;
+  isFavorite?: boolean;
+  lookupKey?: string;
+  imageAvailable?: boolean;
+  priority?: 'alta' | 'media' | 'baja' | 'ninguna';
+  phoneNumbers?: string[];
+  emails?: string[];
 }
