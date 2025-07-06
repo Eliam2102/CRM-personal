@@ -1,12 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { EventType } from '../../../features/shared/organisms/Calendar/CalendarPanel/types/types';
-
-interface Props {
-  days: (Date | null)[];
-  getEventsForDay: (date: Date) => EventType[];
-  onDayPress: (events: EventType[]) => void;
-}
+import { Props } from './types/propsGrid';
 
 export default function CalendarGrid({ days, getEventsForDay, onDayPress }: Props) {
   return (

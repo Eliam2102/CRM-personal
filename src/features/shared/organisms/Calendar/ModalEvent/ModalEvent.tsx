@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Modal,View,TextInput, Button, StyleSheet, Alert, Platform, KeyboardAvoidingView, } from 'react-native';
+import {
+  Modal, View, TextInput, Button, StyleSheet, Alert,
+  Platform, KeyboardAvoidingView,
+} from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Text from '../../../atoms/Text/Text';
@@ -30,8 +33,19 @@ const EventFormModal = ({
   const [title, setTitle] = useState('');
   const [location, setLocation] = useState('');
   const [notes, setNotes] = useState('');
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date(Date.now() + 60 * 60 * 1000));
+
+  const getDefaultStartDate = () => {
+  const local = new Date();
+  local.setMinutes(0);
+  local.setSeconds(0);
+  local.setMilliseconds(0);
+  local.setHours(local.getHours() + 1);
+
+  return local;
+};
+
+  const [startDate, setStartDate] = useState(getDefaultStartDate());
+  const [endDate, setEndDate] = useState(new Date(getDefaultStartDate().getTime() + 60 * 60 * 1000));
   const [contactId, setContactId] = useState<string>('');
 
   const [pickerVisible, setPickerVisible] = useState(false);
@@ -42,12 +56,14 @@ const EventFormModal = ({
     contacts.map(contact => ({ label: contact.name, value: contact.id }))
   );
 
+  // Mantengo sincronizados los contactos
   useEffect(() => {
     setDropdownItems(
       contacts.map(contact => ({ label: contact.name, value: contact.id }))
     );
   }, [contacts]);
 
+  // Cuando se abre el modal, cargo evento a editar o limpio
   useEffect(() => {
     if (visible && eventToEdit) {
       setTitle(eventToEdit.title);
@@ -62,11 +78,12 @@ const EventFormModal = ({
   }, [visible, eventToEdit]);
 
   const resetForm = () => {
+    const defaultStart = getDefaultStartDate();
     setTitle('');
     setLocation('');
     setNotes('');
-    setStartDate(new Date());
-    setEndDate(new Date(Date.now() + 60 * 60 * 1000));
+    setStartDate(defaultStart);
+    setEndDate(new Date(defaultStart.getTime() + 60 * 60 * 1000));
     setContactId('');
   };
 
@@ -78,6 +95,12 @@ const EventFormModal = ({
   const handleSubmit = () => {
     if (!contactId) {
       Alert.alert('Contacto requerido', 'Por favor selecciona un contacto.');
+      return;
+    }
+
+    const nowPlusBuffer = Date.now() + 60 * 1000; // 1 minuto de tolerancia
+    if (startDate.getTime() <= nowPlusBuffer) {
+      Alert.alert('Fecha inválida', 'Selecciona una hora al menos 1 minuto en el futuro.');
       return;
     }
 

@@ -17,17 +17,17 @@ export class ContactRepositoryImpl implements ContactRepository {
     return mapContactModelToEntity(model);
   }
 
-  // async createContact(contact: Contact): Promise<void> {
-  //   const model = mapEntityToContactModel(contact);
-  //   await this.service.createContact(model);
-  // }
+  async createContact(contact: Contact): Promise<void> {
+    const model = mapEntityToContactModel(contact);
+    await this.service.createContact(model);
+  }
 
-  // async updateContact(contact: Contact): Promise<void> {
-  //   const model = mapEntityToContactModel(contact);
-  //   await this.service.updateContact(model);
-  // }
+  async updateContact(contact: Contact): Promise<void> {
+    const model = mapEntityToContactModel(contact);
+    await this.service.updateContact(model);
+  }
 
-  // async deleteContact(id: string): Promise<void> {
-  //   await this.service.deleteContact(id);
-  // }
+  async deleteContact(id: string): Promise<void> {
+    await this.service.deleteContact(id);
+  }
 }

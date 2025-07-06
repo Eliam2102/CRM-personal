@@ -1,21 +1,12 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTheme } from '../../hooks/theme';
-
-type Event = {
-  title: string;
-  date: string; // formato localDateString
-  onPress: () => void;
-};
-
-interface MiniCalendarProps {
-  events: Event[];
-}
+import { MiniCalendarProps } from './types/miniCalendar';
 
 const getWeekDays = () => {
   const today = new Date();
   const start = new Date(today);
-  start.setDate(today.getDate() - today.getDay()); // comienza en domingo
+  start.setDate(today.getDate() - today.getDay());
   return Array.from({ length: 7 }).map((_, i) => {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
@@ -23,41 +14,32 @@ const getWeekDays = () => {
   });
 };
 
-const isPastDate = (date: Date) => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const d = new Date(date);
-  d.setHours(0, 0, 0, 0);
-  return d < today;
-};
+const isSameDay = (a: Date, b: Date) =>
+  a.getFullYear() === b.getFullYear() &&
+  a.getMonth() === b.getMonth() &&
+  a.getDate() === b.getDate();
 
 export default function MiniCalendar({ events }: MiniCalendarProps) {
   const theme = useTheme();
-  const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const week = getWeekDays();
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const eventsForSelected = events
+    .filter(e => isSameDay(new Date(e.date), selectedDate))
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 5);
 
-  // Solo mostrar eventos de hoy en adelante
-  const futureEvents = events.filter(e => {
-    const d = new Date(e.date);
-    d.setHours(0, 0, 0, 0);
-    return d >= today;
-  });
-
-  const hasEvent = (date: string) => futureEvents.some(e => e.date === date);
-  const eventsForSelected = futureEvents.filter(e => e.date === selectedDate);
+  const hasEvent = (date: Date) =>
+    events.some(e => isSameDay(new Date(e.date), date));
 
   return (
     <View style={[styles.wrapper, { backgroundColor: theme.surface }]}>
+      {/* Fila de días */}
       <View style={styles.calendarRow}>
         {week.map((date, i) => {
-          const dateStr = date.toLocaleDateString();
-          const isSelected = dateStr === selectedDate;
-          const has = hasEvent(dateStr);
-          const isPast = isPastDate(date);
+          const isSelected = isSameDay(date, selectedDate);
+          const has = hasEvent(date);
 
           return (
             <TouchableOpacity
@@ -66,17 +48,13 @@ export default function MiniCalendar({ events }: MiniCalendarProps) {
                 styles.dayBox,
                 isSelected && { backgroundColor: theme.primary },
                 has && styles.hasEventDay,
-                isPast && styles.pastDay,
               ]}
-              onPress={() => setSelectedDate(dateStr)}
-              disabled={isPast} // opcional: deshabilitar días pasados
+              onPress={() => setSelectedDate(date)}
             >
               <Text
                 style={[
                   styles.dayText,
-                  {
-                    color: isSelected ? theme.onPrimary : theme.primary,
-                  },
+                  { color: isSelected ? theme.onPrimary : theme.primary },
                 ]}
               >
                 {date.getDate()}
@@ -86,6 +64,7 @@ export default function MiniCalendar({ events }: MiniCalendarProps) {
         })}
       </View>
 
+      {/* Lista de eventos */}
       <View style={styles.eventList}>
         {eventsForSelected.length === 0 ? (
           <Text style={[styles.noEvents, { color: theme.onSurface }]}>
@@ -96,9 +75,11 @@ export default function MiniCalendar({ events }: MiniCalendarProps) {
             <TouchableOpacity
               key={i}
               onPress={e.onPress}
-              style={[styles.eventItem, { backgroundColor: theme.surface }]}
+              style={[styles.eventItem, { backgroundColor: '#E8F4FF' }]}
             >
-              <Text style={{ color: theme.onSurface }}>{e.title}</Text>
+              <Text style={[styles.eventText, { color: '#007AFF', fontWeight: '600' }]}>
+                {e.title}
+              </Text>
             </TouchableOpacity>
           ))
         )}
@@ -130,9 +111,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: '#FF9800',
   },
-  pastDay: {
-    opacity: 0.4,
-  },
   dayText: {
     fontWeight: 'bold',
     fontSize: 14,
@@ -143,7 +121,9 @@ const styles = StyleSheet.create({
   eventItem: {
     padding: 8,
     borderRadius: 6,
-    backgroundColor: '#F5F5F5',
+  },
+  eventText: {
+    fontSize: 15,
   },
   noEvents: {
     fontStyle: 'italic',
