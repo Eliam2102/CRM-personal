@@ -1,7 +1,7 @@
 import { ContactModel } from '../models/contactModel';
 import { Contact } from '../../domain/entities/contact';
 
-// mapear (convertir de modelo a entidad)
+// De modelo (data) a entidad (dominio)
 export function mapContactModelToEntity(model: ContactModel): Contact {
   return {
     id: model.id ?? '',
@@ -10,24 +10,37 @@ export function mapContactModelToEntity(model: ContactModel): Contact {
     contactType: model.contactType,
     firstName: model.firstName,
     lastName: model.lastName,
-    isFavorite: model.isFavorite,
+    isFavorite: model.isFavorite ?? false,
     lookupKey: model.lookupKey,
+    priority: model.priority ?? 'ninguna',
+
+    phoneNumbers: (model.phoneNumbers ?? []).map(number => ({
+      number,
+      label: 'Sin etiqueta',
+    })),
+
+    emails: (model.emails ?? []).map(email => ({
+      email,
+      label: 'Sin etiqueta',
+    })),
   };
 }
 
-//este es para transofrmar de entidad a modelo, en el caso de agregar y editar
-// porqu lo toman de forma procesada como viene de presnetacion y 
-//lo transformar a como lo espera expo-contacts
+// De entidad (dominio) a modelo (data)
 export function mapEntityToContactModel(entity: Contact): ContactModel {
   return {
     id: entity.id,
     name: entity.name,
     firstName: entity.firstName ?? '',
     lastName: entity.lastName ?? '',
-    contactType: entity.contactType ?? '',
-    imageUri: entity.imageUri ?? 'https://example.com/default-image.png',
+    contactType: entity.contactType ?? 'person',
+    imageUri: entity.imageUri ?? '',
     isFavorite: entity.isFavorite ?? false,
     lookupKey: entity.lookupKey ?? '',
-    imageAvailable: !!entity.imageUri, // Puedes ponerlo así si lo quieres calculado
+    imageAvailable: !!entity.imageUri,
+    priority: entity.priority ?? 'ninguna',
+
+    phoneNumbers: (entity.phoneNumbers ?? []).map(p => p.number),
+    emails: (entity.emails ?? []).map(e => e.email),
   };
 }
