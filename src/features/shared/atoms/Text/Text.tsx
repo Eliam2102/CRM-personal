@@ -1,10 +1,20 @@
 // components/atoms/Text/Text.tsx
 import React from 'react';
-import { Text as RNText, StyleSheet, StyleProp, TextStyle } from 'react-native';
+import {
+  Text as RNText,
+  StyleSheet,
+  StyleProp,
+  TextStyle,
+  TextProps as RNTextProps,
+} from 'react-native';
 import { TextProps } from './types/types';
 
-const Text = ({ children, variant = 'body', style }: TextProps) => {
-  return <RNText style={[styles[variant], style]}>{children}</RNText>;
+const Text = ({ children, variant = 'body', style, ...rest }: TextProps) => {
+  return (
+    <RNText style={[styles[variant], style]} {...rest}>
+      {children}
+    </RNText>
+  );
 };
 
 export default Text;

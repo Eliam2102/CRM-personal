@@ -16,12 +16,12 @@ export function mapContactModelToEntity(model: ContactModel): Contact {
 
     phoneNumbers: (model.phoneNumbers ?? []).map(number => ({
       number,
-      label: 'Sin etiqueta',
+      label: '',
     })),
 
     emails: (model.emails ?? []).map(email => ({
       email,
-      label: 'Sin etiqueta',
+      label: '',
     })),
   };
 }

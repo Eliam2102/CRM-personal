@@ -18,7 +18,6 @@ export default function ContactDetailScreen() {
     error,
   } = ContactViewModel();
 
-  // Consultar el contacto al cargar la pantalla
   useEffect(() => {
     fetchContactById(id);
   }, [id]);
@@ -37,7 +36,10 @@ export default function ContactDetailScreen() {
 
   return (
     <View style={styles.container}>
-      <ContactDetailView contact={selectedContact} />
+      <ContactDetailView
+        contact={selectedContact}
+        onRefresh={() => fetchContactById(id)}
+      />
     </View>
   );
 }
