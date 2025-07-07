@@ -5,16 +5,16 @@ import Text from '../../atoms/Text/Text';
 import Button from '../../atoms/Button/Button';
 import { ProfileHeaderProps } from './types/types';
 
-export default function ProfileHeader({ name, imageUri, onBack }: ProfileHeaderProps) {
+export default function ProfileHeader({ name, imageUri, onBack, style }: ProfileHeaderProps) {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       {onBack && (
         <Button onClick={onBack}>
           <Text>Volver</Text>
         </Button>
       )}
-      <Avatar imageUri={imageUri} initials={name[0]} size={60} />
-      <Text style={styles.name}>{name}</Text>
+      <Avatar imageUri={imageUri} initials={name[0]} style={styles.avatar} />
+      {/* <Text style={styles.name}>{name}</Text> */}
     </View>
   );
 }
@@ -28,4 +28,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  avatar: {
+    width: 160,
+    height: 160,
+    borderRadius: 80,
+    backgroundColor: '#6750A4',
+  }
 });
