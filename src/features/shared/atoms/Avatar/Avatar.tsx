@@ -4,10 +4,10 @@ import { View, Text, Image, StyleSheet } from 'react-native';
 import { AvatarProps } from './types/types';
 
 // Componente Avatar que puede recibir una imagen, iniciales y tamaño
-export default function Avatar({ imageUri, initials = '', size = 50 }: AvatarProps) {
+export default function Avatar({ imageUri, initials = '', size = 50, style}: AvatarProps) {
   return (
     // El contenedor del avatar, le paso tamaño y lo hago circular
-    <View style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }]}>
+    <View style={[styles.avatar, { width: size, height: size, borderRadius: size / 2 }, style]}>
       {imageUri ? (
         // Si me pasan una imagen, la muestro aquí
         <Image source={{ uri: imageUri }} style={[styles.image, { width: size, height: size, borderRadius: size / 2 }]} />
