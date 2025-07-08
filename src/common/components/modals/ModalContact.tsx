@@ -1,13 +1,12 @@
 // ContactModal.tsx
 import React, { useEffect, useState } from 'react';
 import {
-  Modal, View, TextInput, Button, StyleSheet, TouchableOpacity, ScrollView,
+  Modal, View, TextInput, Button, StyleSheet, TouchableOpacity,
   Platform, KeyboardAvoidingView, Switch, Alert, Text
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Contact } from '../../../features/contactos/domain/entities/contact';
-
 
 interface Props {
   visible: boolean;
@@ -55,13 +54,20 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
     });
   };
 
+  // Cuando se actualiza firstName o lastName, actualiza automáticamente name
   const handleFieldChange = (key: keyof Contact, value: any) => {
-    setForm({ ...form, [key]: value });
+    const updatedForm = { ...form, [key]: value };
+
+    if (key === 'firstName' || key === 'lastName') {
+      updatedForm.name = `${key === 'firstName' ? value : form.firstName} ${key === 'lastName' ? value : form.lastName}`.trim();
+    }
+
+    setForm(updatedForm);
   };
 
   const handleSubmit = () => {
-    if (!form.name.trim()) {
-      Alert.alert('Nombre requerido', 'Por favor ingresa un nombre');
+    if (!form.firstName.trim()) {
+      Alert.alert('Nombre requerido', 'Por favor ingresa al menos un nombre');
       return;
     }
 
@@ -75,11 +81,6 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
     setForm({ ...form, phoneNumbers: updated });
   };
 
-  const addEmail = () => {
-    const updated = [...(form.emails || []), { email: '', label: 'Trabajo' }];
-    setForm({ ...form, emails: updated });
-  };
-
   return (
     <Modal visible={visible} animationType="slide">
       <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
@@ -87,15 +88,31 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
           <KeyboardAwareScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>{contactToEdit ? 'Editar Contacto' : 'Nuevo Contacto'}</Text>
 
+            {/*  Mostrar nombre completo generado */}
             <Text style={styles.label}>Nombre completo</Text>
-            <TextInput style={styles.input} value={form.name} onChangeText={text => handleFieldChange('name', text)} />
+            <Text style={[styles.input, { backgroundColor: '#EEE', color: '#666' }]}>
+              {form.name || '—'}
+            </Text>
 
+            {/*  Primer nombre */}
             <Text style={styles.label}>Primer nombre</Text>
-            <TextInput style={styles.input} value={form.firstName} onChangeText={text => handleFieldChange('firstName', text)} />
+            <TextInput
+              style={styles.input}
+              value={form.firstName}
+              onChangeText={text => handleFieldChange('firstName', text)}
+              placeholder="Ej. Juan"
+            />
 
+            {/* 👪 Apellido */}
             <Text style={styles.label}>Apellido</Text>
-            <TextInput style={styles.input} value={form.lastName} onChangeText={text => handleFieldChange('lastName', text)} />
+            <TextInput
+              style={styles.input}
+              value={form.lastName}
+              onChangeText={text => handleFieldChange('lastName', text)}
+              placeholder="Ej. Pérez"
+            />
 
+            {/* Tipo de contacto */}
             <Text style={styles.label}>Tipo</Text>
             <View style={styles.row}>
               {['person', 'company'].map(type => (
@@ -109,39 +126,45 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
               ))}
             </View>
 
+            {/*  Favorito */}
             <View style={styles.row}>
               <Text style={styles.label}>¿Favorito?</Text>
-              <Switch value={form.isFavorite} onValueChange={val => handleFieldChange('isFavorite', val)} />
+              <Switch
+                value={form.isFavorite}
+                onValueChange={val => handleFieldChange('isFavorite', val)}
+              />
             </View>
 
+            {/* Prioridad */}
             <Text style={styles.label}>Prioridad</Text>
-                <View style={styles.priorityRow}>
-                {['alta', 'media', 'baja', 'ninguna'].map(level => {
-                    const colorMap: Record<string, string> = {
-                    alta: '#FF4D4D',
-                    media: '#FFA500',
-                    baja: '#4CAF50',
-                    ninguna: '#BDBDBD',
-                    };
+            <View style={styles.priorityRow}>
+              {['alta', 'media', 'baja', 'ninguna'].map(level => {
+                const colorMap: Record<string, string> = {
+                  alta: '#FF4D4D',
+                  media: '#FFA500',
+                  baja: '#4CAF50',
+                  ninguna: '#BDBDBD',
+                };
 
-                    const isSelected = form.priority === level;
+                const isSelected = form.priority === level;
 
-                    return (
-                    <TouchableOpacity
-                        key={level}
-                        onPress={() => handleFieldChange('priority', level)}
-                        style={[
-                        styles.priorityChip,
-                        { backgroundColor: colorMap[level] },
-                        isSelected && styles.prioritySelected,
-                        ]}
-                    >
-                        <Text style={styles.priorityText}>{level.toUpperCase()}</Text>
-                    </TouchableOpacity>
-                    );
-                })}
-                </View>
+                return (
+                  <TouchableOpacity
+                    key={level}
+                    onPress={() => handleFieldChange('priority', level)}
+                    style={[
+                      styles.priorityChip,
+                      { backgroundColor: colorMap[level] },
+                      isSelected && styles.prioritySelected,
+                    ]}
+                  >
+                    <Text style={styles.priorityText}>{level.toUpperCase()}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
 
+            {/*  Teléfonos */}
             <Text style={styles.label}>Teléfonos</Text>
             {form.phoneNumbers?.map((phone, index) => (
               <TextInput
@@ -157,6 +180,8 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
               />
             ))}
             <Button title="Agregar Teléfono" onPress={addPhone} />
+
+            {/* Botones */}
             <View style={styles.footer}>
               <Button title="Cancelar" onPress={onClose} color="#888" />
               <Button title="Guardar" onPress={handleSubmit} />
