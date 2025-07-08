@@ -11,6 +11,8 @@ export interface ContactRepository {
   createContact(contact: Contact): Promise<void>;
   //actualizar un contacto
   updateContact(contact: Contact): Promise<void>;
+  //buscar contacto
+  searchContacts(query: string): Promise<Contact[]>;
   //eliminar un contacto
   deleteContact(id: string): Promise<void>;
 }

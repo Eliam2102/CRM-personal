@@ -108,6 +108,18 @@ export class ContactService {
     });
   }
 
+  //buscar contacto 
+  async searchContacts(query: string): Promise<ContactModel[]> {
+  const contacts = await this.getContacts();
+  const lowerQuery = query.toLowerCase();
+
+  return contacts.filter(contact =>
+    contact.name.toLowerCase().includes(lowerQuery) ||
+    contact.phoneNumbers.some(number => number.includes(query))
+  );
+}
+
+
   async deleteContact(id: string): Promise<void> {
     await Contacts.removeContactAsync(id);
   }
