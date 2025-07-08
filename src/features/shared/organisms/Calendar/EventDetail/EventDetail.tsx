@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Alert, ScrollView, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, Alert, ScrollView, ActivityIndicator, TouchableOpacity } from 'react-native';
 import ProfileHeader from '../../../molecules/Profile/ProfileHeader';
 import Button from '../../../atoms/Button/Button';
 import Text from '../../../atoms/Text/Text';
@@ -35,8 +35,14 @@ export default function EventDetailView({ event }: EventDetailViewProps) {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+        <Text style={styles.backIcon}>←</Text>
+      </TouchableOpacity>
+    <View style={styles.titleContainer}>
+      <Text style={styles.title}>{event.title}</Text>
+    </View>
       <View style={styles.container}>
-        <ProfileHeader name={event.title} imageUri={''} onBack={handleBack} />
+        <ProfileHeader name={event.title} imageUri={''} />
 
         <View style={styles.content}>
           <View style={styles.detailCard}>
@@ -80,6 +86,28 @@ export default function EventDetailView({ event }: EventDetailViewProps) {
 }
 
 const styles = StyleSheet.create({
+  titleContainer: {
+  marginTop: 60, // espacio para que no se encime con el back
+  alignItems: 'center',
+  marginBottom: 16,
+},
+title: {
+  fontSize: 24,
+  fontWeight: '700',
+  color: '#333',
+},
+  backButton: {
+  position: 'absolute',
+  top: -20,
+  left: 10, 
+  padding: 6,
+  zIndex: 10,
+},
+backIcon: {
+  fontSize: 40,
+  color: '#007AFF', 
+  fontWeight: '600',
+},
   scrollContainer: {
     flexGrow: 1,
     backgroundColor: '#F5F5F5',
@@ -136,5 +164,5 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '600',
     fontSize: 16,
-  },
+  }
 });

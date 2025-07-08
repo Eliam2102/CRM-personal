@@ -1,12 +1,13 @@
 //import importar el module
 import { DrawerNavigationProp } from "@react-navigation/drawer";
-
+import { StackContactParamList } from "../Contact/types/types";
+import { StackCalendarParamList } from "../Calendar/types/types";
 //creacion del tipado ahora si
 export type RootDrawerParamList = {
     //defino mis rutas principales en este caso deben ser las siguientes:
     index: undefined;
-    contactsMain: undefined;
-    calendarMain: undefined;
+    contactsMain: { screen: keyof StackContactParamList; params?: StackContactParamList[keyof StackContactParamList]};
+    calendarMain: { screen: keyof StackCalendarParamList; params?: StackCalendarParamList[keyof StackCalendarParamList]};
     notificationsMain: undefined;
     settingsMain: undefined;
 }
