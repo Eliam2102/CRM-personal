@@ -4,23 +4,31 @@ import ContactCard from '../../molecules/Cards/ContactCard/ContactCard';
 import Text from '../../atoms/Text/Text';
 import Button from '../../atoms/Button/Button';
 import MiniCalendar from '../../../../common/components/calendar/calendar';
-import { useNavigation } from '@react-navigation/native';
 import { DrawerNavProp } from '../../../../navigation/types/Drawer';
 import { useTheme } from '../../../../common/hooks/theme';
+import { DashboardProps } from './types/types';
+import { useNavigation } from '@react-navigation/native';
+import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { RootDrawerParamList } from '../../../../navigation/types/Drawer';
 
-interface DashboardProps {
-  contacts: { name: string; imageUri?: string; onPress: () => void }[];
-  events: { title: string; date: string; onPress: () => void }[];
-  notifications: { message: string; onPress: () => void }[];
-  onNavigateContacts: () => void;
-  onNavigateCalendar: () => void;
-  onNavigateNotifications: () => void;
-  onNavigateSettings: () => void;
-}
-
-export default function Dashboard({ contacts, events, notifications, onNavigateContacts, onNavigateCalendar }: DashboardProps) {
-  const navigation = useNavigation<DrawerNavProp>();
+export default function Dashboard({ contacts, events, totalContacts, totalEventsToday, onNavigateContacts, onNavigateCalendar }: DashboardProps) {
+ 
+const navigation = useNavigation<DrawerNavigationProp<RootDrawerParamList>>();
   const theme = useTheme();
+
+  const goToContactDetail = (id: string) => {
+  navigation.navigate('contactsMain', {
+    screen: 'contactDetail',
+    params: { id },
+  });
+};
+
+const goToEventDetail = (id: string) => {
+  navigation.navigate('calendarMain', {
+    screen: 'eventDetail',
+    params: { id },
+  });
+};
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
@@ -33,20 +41,24 @@ export default function Dashboard({ contacts, events, notifications, onNavigateC
 
       {/* KPIs */}
       <View style={styles.kpiContainer}>
-        <View style={[styles.kpiBox, { backgroundColor: theme.surface }]}>
-          <Text style={[styles.kpiNumber, {color: theme.onSurface}]}>{contacts.length}</Text>
-          <Text style={styles.kpiLabel}>Contactos</Text>
-        </View>
-        <View style={[styles.kpiBox, { backgroundColor: theme.surface }]}>
-          <Text style={[styles.kpiNumber, , {color: theme.onSurface}]}>{events.length}</Text>
-          <Text style={styles.kpiLabel}>Eventos</Text>
-        </View>
+      <View style={[styles.kpiBox, { backgroundColor: theme.surface }]}>
+        <Text style={[styles.kpiNumber, { color: theme.onSurface }]}>{totalContacts}</Text>
+        <Text style={styles.kpiLabel}>Contactos</Text>
       </View>
+      <View style={[styles.kpiBox, { backgroundColor: theme.surface }]}>
+        <Text style={[styles.kpiNumber, { color: theme.onSurface }]}>{totalEventsToday}</Text>
+        <Text style={styles.kpiLabel}>Eventos</Text>
+      </View>
+    </View>
+
 
       {/* Mini calendario */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.onBackground }]}>Calendario</Text>
-        <MiniCalendar events={events} />
+        <MiniCalendar events={events.map(e => ({
+            ...e,
+            onPress: () => goToEventDetail(e.id),
+          }))} />
         <Button onClick={onNavigateCalendar} style={[styles.button, { backgroundColor: theme.primary }]}>
           <Text style={[styles.buttonText, { color: theme.onPrimary }]}>Ver todo el calendario</Text>
         </Button>
@@ -56,7 +68,7 @@ export default function Dashboard({ contacts, events, notifications, onNavigateC
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: theme.onBackground }]}>Últimos contactos</Text>
         {contacts.slice(0, 3).map((contact, i) => (
-          <ContactCard key={i} {...contact} />
+          <ContactCard key={i} {...contact} onPress={() => goToContactDetail(contact.id)} />
         ))}
         <Button onClick={onNavigateContacts} style={[styles.button, { backgroundColor: theme.primary }]}>
           <Text style={[styles.buttonText, { color: theme.onPrimary }]}>Ver todos los contactos</Text>

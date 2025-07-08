@@ -26,33 +26,33 @@ export default function DayEventsModal({ visible, events, onClose }: Props) {
 
             return (
               <TouchableOpacity
-                key={event.id}
-                onPress={() => {
-                    onClose();
-                    navigation.navigate('eventDetail', { id: event.id });
-                }}
+            key={event.id}
+            onPress={() => {
+                onClose();
+                navigation.navigate('eventDetail', { id: event.id });
+            }}
+            style={[
+                styles.eventItem,
+                isPast ? styles.pastEventItem : styles.activeEventItem,
+            ]}
+            >
+            <View style={styles.eventRow}>
+                <FontAwesome
+                name={isPast ? 'check-circle' : 'clock-o'}
+                size={18}
+                color={isPast ? '#999' : '#007AFF'}
+                style={{ marginRight: 8 }}
+                />
+                <Text
                 style={[
-                    styles.eventItem,
-                    isPast ? styles.pastEventItem : styles.activeEventItem,
+                    styles.eventTitle,
+                    isPast ? styles.pastEventTitle : styles.activeEventTitle,
                 ]}
                 >
-                <View style={styles.eventRow}>
-                    <FontAwesome
-                    name={isPast ? 'check-circle' : 'clock-o'}
-                    size={18}
-                    color={isPast ? '#999' : '#007AFF'}
-                    style={{ marginRight: 8 }}
-                    />
-                    <Text
-                    style={[
-                        styles.eventTitle,
-                        isPast ? styles.pastEventTitle : styles.activeEventTitle,
-                    ]}
-                    >
-                    {event.title}
-                    </Text>
-                </View>
-                </TouchableOpacity>
+                {event.title}
+                </Text>
+            </View>
+            </TouchableOpacity>
             );
           })}
 
