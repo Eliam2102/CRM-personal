@@ -1,47 +1,30 @@
 import React from 'react';
 import { View, StyleSheet, Switch } from 'react-native';
-import SettingOption from '../../molecules/Option/SettingOption';
-import Button from '../../atoms/Button/Button';
 import Text from '../../atoms/Text/Text';
+import { useThemeStore } from '../../../../store/theme/themeStore';
+import Icon from 'react-native-vector-icons/Feather';
 
-interface SettingsPanelProps {
-  notificationsEnabled: boolean;
-  onToggleNotifications: () => void;
-  calendarSyncEnabled: boolean;
-  onToggleCalendarSync: () => void;
-  onResetApp: () => void;
-}
+export default function SettingsPanel() {
+  const { theme, toggleTheme } = useThemeStore();
+  const isDarkMode = theme === 'dark';
 
-export default function SettingsPanel({
-  notificationsEnabled,
-  onToggleNotifications,
-  calendarSyncEnabled,
-  onToggleCalendarSync,
-  onResetApp,
-}: SettingsPanelProps) {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Configuración</Text>
+    <View style={[styles.container, { backgroundColor: isDarkMode ? '#121212' : '#f9f9f9' }]}>
 
-      <SettingOption
-        label="Notificaciones"
-        iconName="notifications"
-        value={notificationsEnabled}
-        onToggle={onToggleNotifications} //nop afecta que salg en rojo esto se adtpara luego
-      />
-
-      <SettingOption
-        label="Sincronizar calendario"
-        iconName="calendar-today"
-        value={calendarSyncEnabled}
-        onToggle={onToggleCalendarSync} //nop afecta que salg en rojo esto se adtpara luego
-      />
-
-      <View style={styles.separator} />
-
-      <Button onClick={onResetApp} style={styles.resetButton}>
-        <Text style={styles.resetButtonText}>Restablecer aplicación</Text>
-      </Button>
+      <View style={styles.optionRow}>
+        <View style={styles.iconLabel}>
+          <Icon
+            name={isDarkMode ? 'moon' : 'sun'}
+            size={24}
+            color={isDarkMode ? '#fff' : '#333'}
+            style={styles.icon}
+          />
+          <Text style={[styles.label, { color: isDarkMode ? '#fff' : '#000' }]}>
+            {isDarkMode ? 'Modo Oscuro' : 'Modo Claro'}
+          </Text>
+        </View>
+        <Switch value={isDarkMode} onValueChange={toggleTheme} />
+      </View>
     </View>
   );
 }
@@ -51,27 +34,26 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     gap: 24,
-    backgroundColor: '#f9f9f9',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
-    color: '#333',
   },
-  separator: {
-    height: 1,
-    backgroundColor: '#ddd',
-    marginVertical: 16,
-  },
-  resetButton: {
-    backgroundColor: '#ff4d4d',
-    paddingVertical: 12,
-    borderRadius: 8,
+  optionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  resetButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
+  iconLabel: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
+    marginRight: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
