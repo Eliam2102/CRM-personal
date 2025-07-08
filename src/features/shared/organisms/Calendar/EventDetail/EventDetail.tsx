@@ -35,14 +35,12 @@ export default function EventDetailView({ event }: EventDetailViewProps) {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <TouchableOpacity onPress={handleBack} style={styles.backButton}>
-        <Text style={styles.backIcon}>←</Text>
-      </TouchableOpacity>
+      
     <View style={styles.titleContainer}>
       <Text style={styles.title}>{event.title}</Text>
     </View>
       <View style={styles.container}>
-        <ProfileHeader name={event.title} imageUri={''} />
+        <ProfileHeader name={event.title} imageUri={''} onBack={handleBack} />
 
         <View style={styles.content}>
           <View style={styles.detailCard}>
