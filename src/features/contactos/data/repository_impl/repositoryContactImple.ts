@@ -26,6 +26,11 @@ export class ContactRepositoryImpl implements ContactRepository {
     const model = mapEntityToContactModel(contact);
     await this.service.updateContact(model);
   }
+  //buscar contacto
+  async searchContacts(query: string): Promise<Contact[]> {
+    const models = await this.service.searchContacts(query);
+    return models.map(mapContactModelToEntity);
+  }
 
   async deleteContact(id: string): Promise<void> {
     await this.service.deleteContact(id);
