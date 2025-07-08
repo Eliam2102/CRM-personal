@@ -9,7 +9,7 @@ import {
   Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { CalendarViewModel } from './viewmodel/CalendarViewModel';
 import { ContactViewModel } from '../../contactos/presentation/viewmodel/ContactViewModel';
 import { useNotificationViewModel } from '../../notifications/presentation/viewmodels/notificationViewModel';
@@ -18,6 +18,7 @@ import EventFormModal from '../../shared/organisms/Calendar/ModalEvent/ModalEven
 import { CalendarEvent } from '../domain/entities/event';
 
 export default function CalendarScreen() {
+  const navigation = useNavigation(); // ⬅️ necesario para navegar
   const { events, isLoading, error, createEvent, fetchEvents } = CalendarViewModel();
   const { contacts, isLoading: contactsLoading, error: contactsError } = ContactViewModel();
   const { createNotification } = useNotificationViewModel();
@@ -46,6 +47,11 @@ export default function CalendarScreen() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
         <View style={styles.content}>
+          {/* 🔙 Botón de regresar */}
+          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+            <Text style={styles.backIcon}>←</Text>
+          </TouchableOpacity>
+
           <View style={styles.header}>
             <Text style={styles.title}>Calendario</Text>
             <TouchableOpacity style={styles.addButton} onPress={() => setIsModalVisible(true)}>
@@ -102,5 +108,19 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '600',
     fontSize: 14,
+  },
+
+  // 🔙 Estilo para el botón de regresar
+  backButton: {
+    position: 'absolute',
+    top: -30,
+    left: 12,
+    zIndex: 10,
+    padding: 6,
+  },
+  backIcon: {
+    fontSize: 38,
+    color: '#007BFF',
+    fontWeight: '600',
   },
 });
