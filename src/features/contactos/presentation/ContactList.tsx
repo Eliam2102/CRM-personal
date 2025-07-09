@@ -11,6 +11,7 @@ import ContactList from '../../shared/organisms/Contact/ContactList/ContactList'
 import { ContactViewModel } from './viewmodel/ContactViewModel';
 import ContactModal from '../../../common/components/modals/ModalContact';
 import { Contact } from '../domain/entities/contact';
+import { useTheme } from '../../../common/hooks/theme';
 
 export default function ContactListScreen() {
   const {
@@ -22,6 +23,7 @@ export default function ContactListScreen() {
     searchContacts,
   } = ContactViewModel();
 
+  const theme = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredContacts, setFilteredContacts] = useState<Contact[]>([]);
@@ -75,7 +77,7 @@ export default function ContactListScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
       <TextInput
         style={styles.searchInput}
         placeholder="Buscar por nombre o número"

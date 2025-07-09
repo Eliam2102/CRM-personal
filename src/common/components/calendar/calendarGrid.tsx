@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { Props } from './types/propsGrid';
+import { useTheme } from '../../hooks/theme';
 
 export default function CalendarGrid({ days, getEventsForDay, onDayPress }: Props) {
+  const theme = useTheme();
   return (
     <View style={styles.grid}>
       {days.map((date, i) => {
@@ -14,12 +16,12 @@ export default function CalendarGrid({ days, getEventsForDay, onDayPress }: Prop
               <TouchableOpacity
                 style={[
                   styles.dayButton,
-                  events.length > 0 && styles.hasEvent,
+                  events.length > 0 && { backgroundColor: theme.primary },
                 ]}
                 onPress={() => events.length > 0 && onDayPress(events)}
               >
                 <Text style={styles.dayText}>{date.getDate()}</Text>
-                {events.length > 0 && <Text style={styles.eventDot}>•</Text>}
+                {events.length > 0 && <Text style={[styles.eventDot, {color: theme.surface}]}>•</Text>}
               </TouchableOpacity>
             ) : (
               <View style={styles.dayButton} />
@@ -42,7 +44,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     elevation: 1,
   },
-  hasEvent: { backgroundColor: '#D0E8FF' },
+  hasEvent: { backgroundColor: '#092'  },
   dayText: { fontWeight: 'bold', fontSize: 16, color: '#333' },
   eventDot: { fontSize: 16, color: '#007AFF', marginTop: 4 },
 });

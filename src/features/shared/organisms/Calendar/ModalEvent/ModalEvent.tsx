@@ -10,6 +10,7 @@ import { CalendarEventModel } from '../../../../calendar/data/models/CalendarMod
 import { Contact } from '../../../../contactos/domain/entities/contact';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useTheme } from '../../../../../common/hooks/theme';
 
 interface EventFormModalProps {
   visible: boolean;
@@ -43,7 +44,7 @@ const EventFormModal = ({
 
   return local;
 };
-
+  const theme = useTheme();
   const [startDate, setStartDate] = useState(getDefaultStartDate());
   const [endDate, setEndDate] = useState(new Date(getDefaultStartDate().getTime() + 60 * 60 * 1000));
   const [contactId, setContactId] = useState<string>('');
@@ -123,7 +124,7 @@ const EventFormModal = ({
 
   return (
     <Modal visible={visible} animationType="slide">
-      <SafeAreaView style={styles.modalBackground}>
+      <SafeAreaView style={[styles.modalBackground, {backgroundColor: theme.background}]}>
         <KeyboardAvoidingView
           style={{ flex: 1 }}
           behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -135,9 +136,9 @@ const EventFormModal = ({
               enableOnAndroid
               extraScrollHeight={20}
             >
-              <Text style={styles.title}>{eventToEdit ? 'Editar Evento' : 'Nuevo Evento'}</Text>
+              <Text style={[styles.title, {color: theme.onBackground}]}>{eventToEdit ? 'Editar Evento' : 'Nuevo Evento'}</Text>
 
-              <Text style={styles.label}>Título</Text>
+              <Text style={[styles.label,  {color: theme.onBackground}]}>Título</Text>
               <TextInput
                 style={styles.input}
                 value={title}
@@ -145,7 +146,7 @@ const EventFormModal = ({
                 placeholder="Ej. Reunión de equipo"
               />
 
-              <Text style={styles.label}>Ubicación</Text>
+              <Text style={[styles.label,  {color: theme.onBackground}]}>Ubicación</Text>
               <TextInput
                 style={styles.input}
                 value={location}
@@ -153,7 +154,7 @@ const EventFormModal = ({
                 placeholder="Ej. Sala 4 o Zoom"
               />
 
-              <Text style={styles.label}>Notas</Text>
+              <Text style={[styles.label,  {color: theme.onBackground}]}>Notas</Text>
               <TextInput
                 style={[styles.input, styles.multilineInput]}
                 value={notes}
@@ -162,7 +163,7 @@ const EventFormModal = ({
                 multiline
               />
 
-              <Text style={styles.label}>Inicio</Text>
+              <Text style={[styles.label,  {color: theme.onBackground}]}>Inicio</Text>
               <Button
                 title={startDate.toLocaleString()}
                 onPress={() => {
@@ -171,7 +172,7 @@ const EventFormModal = ({
                 }}
               />
 
-              <Text style={styles.label}>Fin</Text>
+              <Text style={[styles.label,  {color: theme.onBackground}]}>Fin</Text>
               <Button
                 title={endDate.toLocaleString()}
                 onPress={() => {
@@ -180,7 +181,7 @@ const EventFormModal = ({
                 }}
               />
 
-              <Text style={styles.label}>Contacto</Text>
+              <Text style={[styles.label,  {color: theme.onBackground}]}>Contacto</Text>
               <DropDownPicker
                 open={dropdownOpen}
                 value={contactId}

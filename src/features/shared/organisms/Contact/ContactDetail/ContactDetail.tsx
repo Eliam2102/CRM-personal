@@ -7,6 +7,7 @@ import { Contact } from '../../../../contactos/domain/entities/contact';
 import ContactModal from '../../../../../common/components/modals/ModalContact';
 import { ContactViewModel } from '../../../../contactos/presentation/viewmodel/ContactViewModel';
 import ProfileHeader from '../../../molecules/Profile/ProfileHeader';
+import { useTheme } from '../../../../../common/hooks/theme';
 
 interface Props {
   contact: Contact;
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function ContactDetailView({ contact, onRefresh }: Props) {
+  const theme = useTheme();
   const navigation = useNavigation();
   const { updateContact, deleteContact } = ContactViewModel();
   const [modalVisible, setModalVisible] = useState(false);
@@ -53,10 +55,10 @@ const handleDelete = () => {
   };
 
   return (
-    <View style={styles.root}>
-      <View style={styles.header}>
+    <View style={[styles.root, {backgroundColor: theme.background}]}>
+      <View style={[styles.header, {backgroundColor: theme.background}]}>
         <Pressable onPress={() => navigation.goBack()} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={26} color="#007AFF" />
+          <Ionicons name="arrow-back" size={26} color={theme.onBackground} />
         </Pressable>
 
         <View style={{ flex: 1 }} /> 
@@ -69,28 +71,28 @@ const handleDelete = () => {
       <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.avatarContainer}>
           <ProfileHeader name={contact.name} style={styles.avatar} />
-          <Text style={styles.name}>{contact.name}</Text>
+          <Text style={[styles.name,  {color:  theme.onBackground}]}>{contact.name}</Text>
         </View>
 
-        <View style={styles.card}>
-          <Detail label="Primer Nombre" value={contact.firstName} />
+        <View style={[styles.card, {backgroundColor: theme.surface}]}>
+          <Detail label="Primer Nombre" value={contact.firstName}  />
           <Detail label="Apellido" value={contact.lastName} />
           <Detail
             label="Tipo de Contacto"
             value={contact.contactType === 'company' ? 'Empresa' : 'Persona'}
           />
 
-          <Text style={styles.label}>Prioridad</Text>
+          <Text style={[styles.label, {color:  theme.onSurface}]}>Prioridad</Text>
           <View style={[styles.chip, { backgroundColor: priorityColors[contact.priority] }]}>
             <Text style={styles.chipText}>{contact.priority.toUpperCase()}</Text>
           </View>
 
           {contact.phoneNumbers?.length > 0 && (
             <>
-              <Text style={styles.label}>Teléfonos</Text>
+              <Text style={[styles.label,  {color:  theme.onSurface}]}>Teléfonos</Text>
               {contact.phoneNumbers.map((p, index) => (
-                <Text key={index} style={styles.detailText}>
-                 <Text>{p.number}</Text>
+                <Text key={index} style={[styles.detailText, {color: theme.onBackground}]}>
+                  {p.number}
                 </Text>
               ))}
             </>
@@ -114,10 +116,11 @@ const handleDelete = () => {
 }
 
 function Detail({ label, value }: { label: string; value?: string }) {
+  const theme = useTheme();
   return (
     <>
-      <Text style={styles.label}>{label}</Text>
-      <Text style={styles.detailText}>{value || 'No disponible'}</Text>
+      <Text style={[styles.label, {color: theme.onBackground}]}>{label}</Text>
+      <Text style={[styles.detailText, {color: theme.onSurface}]}>{value || 'No disponible'}</Text>
     </>
   );
 }

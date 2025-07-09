@@ -4,17 +4,19 @@ import ContactCard from '../../../molecules/Cards/ContactCard/ContactCard';
 import { useNavigation } from "@react-navigation/native";
 import { ContactStackNavigationProp } from '../../../../../navigation/Contact/types/types';
 import { Contact } from '../../../../contactos/domain/entities/contact';
+import { useTheme } from '../../../../../common/hooks/theme';
 
 interface ContactListProps {
   contacts: Contact[];
 }
 
 export default function ContactList({ contacts }: ContactListProps) {
+  const theme = useTheme();
   const navigation = useNavigation<ContactStackNavigationProp>();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.headerTitle}>Lista de Contactos</Text>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
+      <Text style={[styles.headerTitle, {color: theme.onBackground}]}>Lista de Contactos</Text>
       <FlatList
         data={contacts}
         keyExtractor={(item, index) => `${item.name}-${index}`}

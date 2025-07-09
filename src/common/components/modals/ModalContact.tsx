@@ -7,6 +7,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Contact } from '../../../features/contactos/domain/entities/contact';
+import { useTheme } from '../../hooks/theme';
 
 interface Props {
   visible: boolean;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export default function ContactModal({ visible, contactToEdit, onClose, onSubmit }: Props) {
+  const theme = useTheme();
   const [form, setForm] = useState<Contact>({
     id: '',
     name: '',
@@ -83,19 +85,19 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
 
   return (
     <Modal visible={visible} animationType="slide">
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: theme.background }}>
         <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-          <KeyboardAwareScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>{contactToEdit ? 'Editar Contacto' : 'Nuevo Contacto'}</Text>
+          <KeyboardAwareScrollView contentContainerStyle={[styles.container, {backgroundColor: theme.background}]}>
+            <Text style={[styles.title, {color: theme.onBackground}]}>{contactToEdit ? 'Editar Contacto' : 'Nuevo Contacto'}</Text>
 
             {/*  Mostrar nombre completo generado */}
-            <Text style={styles.label}>Nombre completo</Text>
+            <Text style={[styles.label, {color: theme.onBackground}]}>Nombre completo</Text>
             <Text style={[styles.input, { backgroundColor: '#EEE', color: '#666' }]}>
               {form.name || '—'}
             </Text>
 
             {/*  Primer nombre */}
-            <Text style={styles.label}>Primer nombre</Text>
+            <Text style={[styles.label, {color: theme.onBackground}]}>Primer nombre</Text>
             <TextInput
               style={styles.input}
               value={form.firstName}
@@ -104,7 +106,7 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
             />
 
             {/* 👪 Apellido */}
-            <Text style={styles.label}>Apellido</Text>
+            <Text style={[styles.label, {color: theme.onBackground}]}>Apellido</Text>
             <TextInput
               style={styles.input}
               value={form.lastName}
@@ -113,7 +115,7 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
             />
 
             {/* Tipo de contacto */}
-            <Text style={styles.label}>Tipo</Text>
+            <Text style={[styles.label, {color: theme.onBackground}]}>Tipo</Text>
             <View style={styles.row}>
               {['person', 'company'].map(type => (
                 <TouchableOpacity
@@ -128,7 +130,7 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
 
             {/*  Favorito */}
             <View style={styles.row}>
-              <Text style={styles.label}>¿Favorito?</Text>
+              <Text style={[styles.label, {color: theme.onBackground}]}>¿Favorito?</Text>
               <Switch
                 value={form.isFavorite}
                 onValueChange={val => handleFieldChange('isFavorite', val)}
@@ -136,7 +138,7 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
             </View>
 
             {/* Prioridad */}
-            <Text style={styles.label}>Prioridad</Text>
+            <Text style={[styles.label, {color: theme.onBackground}]}>Prioridad</Text>
             <View style={styles.priorityRow}>
               {['alta', 'media', 'baja', 'ninguna'].map(level => {
                 const colorMap: Record<string, string> = {
@@ -165,7 +167,7 @@ export default function ContactModal({ visible, contactToEdit, onClose, onSubmit
             </View>
 
             {/*  Teléfonos */}
-            <Text style={styles.label}>Teléfonos</Text>
+            <Text style={[styles.label, {color: theme.onBackground}]}>Teléfonos</Text>
             {form.phoneNumbers?.map((phone, index) => (
               <TextInput
                 key={index}
