@@ -6,12 +6,14 @@ import Text from '../../../atoms/Text/Text';
 import { useNavigation } from '@react-navigation/native';
 import { CalendarEvent } from '../../../../calendar/domain/entities/event';
 import { ContactViewModel } from '../../../../contactos/presentation/viewmodel/ContactViewModel';
+import { useTheme } from '../../../../../common/hooks/theme';
 
 interface EventDetailViewProps {
   event: CalendarEvent;
 }
 
 export default function EventDetailView({ event }: EventDetailViewProps) {
+  const theme = useTheme();
   const navigation = useNavigation();
   const { fetchContactById, selectedContact, isLoading } = ContactViewModel();
   const [contactName, setContactName] = useState<string>('Cargando...');
@@ -34,12 +36,12 @@ export default function EventDetailView({ event }: EventDetailViewProps) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <ScrollView contentContainerStyle={[styles.scrollContainer, {backgroundColor: theme.surface}]}>
       
-    <View style={styles.titleContainer}>
+    <View style={[styles.titleContainer, {backgroundColor: theme.surface}]}>
       <Text style={styles.title}>{event.title}</Text>
     </View>
-      <View style={styles.container}>
+      <View style={[styles.container, {backgroundColor: theme.surface}]}>
         <ProfileHeader name={event.title} imageUri={''} onBack={handleBack} />
 
         <View style={styles.content}>

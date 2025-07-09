@@ -4,6 +4,7 @@ import { View, StyleSheet, Text, ActivityIndicator, TouchableOpacity } from 'rea
 import CalendarGrid from '../../../../../common/components/calendar/calendarGrid';
 import DayEventsModal from '../../../../../common/components/modals/eventDayModal';
 import { EventType } from './types/types';
+import { useTheme } from '../../../../../common/hooks/theme';
 
 const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
 const getStartDayOffset = (year: number, month: number) => new Date(year, month, 1).getDay();
@@ -22,6 +23,7 @@ export default function CalendarPanel({
   isLoading?: boolean;
   error?: string | null;
 }) {
+  const theme = useTheme();
   const [selectedEvents, setSelectedEvents] = useState<EventType[] | null>(null);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -57,7 +59,7 @@ export default function CalendarPanel({
     return (
       <View style={styles.centerContent}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Cargando eventos...</Text>
+        <Text style={[styles.loadingText, {color: theme.onBackground}]}>Cargando eventos...</Text>
       </View>
     );
   }
@@ -65,22 +67,22 @@ export default function CalendarPanel({
   if (error) {
     return (
       <View style={styles.centerContent}>
-        <Text style={styles.errorText}>{error}</Text>
+        <Text style={[styles.errorText, {color: theme.onError}]}>{error}</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: theme.surface}]}>
       <View style={styles.monthNav}>
         <TouchableOpacity onPress={() => changeMonth(-1)} style={styles.navButton}>
-          <Text style={styles.navText}>‹</Text>
+          <Text style={[styles.navText, {color: theme.primary}]}>‹</Text>
         </TouchableOpacity>
-        <Text style={styles.monthText}>
+        <Text style={[styles.monthText, {color: theme.onBackground}]}>
           {monthNames[currentMonth]} {currentYear}
         </Text>
         <TouchableOpacity onPress={() => changeMonth(1)} style={styles.navButton}>
-          <Text style={styles.navText}>›</Text>
+          <Text style={[styles.navText, {color: theme.primary}]}>›</Text>
         </TouchableOpacity>
       </View>
 

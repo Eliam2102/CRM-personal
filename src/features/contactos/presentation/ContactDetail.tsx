@@ -4,10 +4,12 @@ import { RouteProp, useRoute } from '@react-navigation/native';
 import { StackContactParamList } from '../../../navigation/Contact/types/types';
 import ContactDetailView from '../../shared/organisms/Contact/ContactDetail/ContactDetail';
 import { ContactViewModel } from './viewmodel/ContactViewModel';
+import { useTheme } from '../../../common/hooks/theme';
 
 type ContactDetailRouteProp = RouteProp<StackContactParamList , 'contactDetail'>;
 
 export default function ContactDetailScreen() {
+  const theme = useTheme();
   const route = useRoute<ContactDetailRouteProp>();
   const { id } = route.params;
 
@@ -35,7 +37,7 @@ export default function ContactDetailScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
       <ContactDetailView
         contact={selectedContact}
         onRefresh={() => fetchContactById(id)}
