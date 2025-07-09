@@ -16,9 +16,11 @@ import { useNotificationViewModel } from '../../notifications/presentation/viewm
 import CalendarPanel from '../../shared/organisms/Calendar/CalendarPanel/CalendarPanel';
 import EventFormModal from '../../shared/organisms/Calendar/ModalEvent/ModalEvent';
 import { CalendarEvent } from '../domain/entities/event';
+import { useTheme } from '../../../common/hooks/theme';
 
 export default function CalendarScreen() {
-  const navigation = useNavigation(); // ⬅️ necesario para navegar
+const theme = useTheme();
+  const navigation = useNavigation(); 
   const { events, isLoading, error, createEvent, fetchEvents } = CalendarViewModel();
   const { contacts, isLoading: contactsLoading, error: contactsError } = ContactViewModel();
   const { createNotification } = useNotificationViewModel();
@@ -41,21 +43,21 @@ export default function CalendarScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, {backgroundColor: theme.background}]}>
       <KeyboardAvoidingView
-        style={styles.flex}
+        style={[styles.flex, {backgroundColor: theme.background}]}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.content}>
+        <View style={[styles.content, {backgroundColor: theme.background}]}>
           {/* 🔙 Botón de regresar */}
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backIcon}>←</Text>
+            <Text style={[styles.backIcon, {color: theme.onBackground}]}>←</Text>
           </TouchableOpacity>
 
           <View style={styles.header}>
-            <Text style={styles.title}>Calendario</Text>
-            <TouchableOpacity style={styles.addButton} onPress={() => setIsModalVisible(true)}>
-              <Text style={styles.addButtonText}>+ Nuevo</Text>
+            <Text style={[styles.title, {color: theme.onBackground}]}>Calendario</Text>
+            <TouchableOpacity style={[styles.addButton, {backgroundColor: theme.surface}]} onPress={() => setIsModalVisible(true)}>
+              <Text style={[styles.addButtonText, {color: theme.onSurface}]}>+ Nuevo</Text>
             </TouchableOpacity>
           </View>
 

@@ -4,6 +4,7 @@ import { EventType } from '../../../features/shared/organisms/Calendar/CalendarP
 import { useNavigation } from '@react-navigation/native';
 import { CalendarStackNavigationProp } from '../../../navigation/Calendar/types/types';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { useTheme } from '../../hooks/theme';
 
 interface Props {
   visible: boolean;
@@ -14,12 +15,13 @@ interface Props {
 export default function DayEventsModal({ visible, events, onClose }: Props) {
   const navigation = useNavigation<CalendarStackNavigationProp>();
   const now = new Date();
+  const theme = useTheme();
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.modalOverlay}>
-        <View style={styles.modalContent}>
-          <Text style={styles.modalTitle}>Eventos del día</Text>
+        <View style={[styles.modalContent, {backgroundColor: theme.surface}]}>
+          <Text style={[styles.modalTitle, {color: theme.onBackground}]}>Eventos del día</Text>
 
           {events.map((event) => {
             const isPast = new Date(event.startDate) < now;

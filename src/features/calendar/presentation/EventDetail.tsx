@@ -9,10 +9,12 @@ import EventFormModal from '../../shared/organisms/Calendar/ModalEvent/ModalEven
 import { ContactViewModel } from '../../contactos/presentation/viewmodel/ContactViewModel';
 import { CalendarEventModel } from '../../calendar/data/models/CalendarModel';
 import { CalendarEvent } from '../domain/entities/event';
+import { useTheme } from '../../../common/hooks/theme';
 
 type EventDetailRouteProp = RouteProp<StackCalendarParamList, 'eventDetail'>;
 
 export default function EventDetailScreen() {
+  const theme = useTheme();
   const route = useRoute<EventDetailRouteProp>();
   const { id } = route.params;
   const navigation = useNavigation();
@@ -78,12 +80,12 @@ export default function EventDetailScreen() {
   if (!selectedEvent) return <Text style={styles.errorText}>No se encontró el evento.</Text>;
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, {backgroundColor: theme.background}]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.flex}
       >
-        <View style={styles.scrollContent}>
+        <View style={[styles.scrollContent, {backgroundColor: theme.background}]}>
           <EventDetailView event={selectedEvent} />
           <View style={styles.actions}>
             <Button title="Editar" onPress={() => setIsModalVisible(true)} />
